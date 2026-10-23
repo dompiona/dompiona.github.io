@@ -1705,7 +1705,7 @@ const VIEWS = ["home", "catalog", "build", "quiz", "cabinet"];
 /* ссылки из бота: ?v=catalog — открыть нужный раздел (hash в мини-приложении занят данными Telegram) */
 let bootView = new URLSearchParams(location.search).get("v");
 function route() {
-  const v = (location.hash || "#home").slice(1).split(/[?&]/)[0];
+  const v = (location.hash || "").slice(1).split(/[?&]/)[0];
   const view = VIEWS.includes(v) ? v : VIEWS.includes(bootView) ? bootView : "home";
   bootView = null;
   $$(".view").forEach(s => s.classList.toggle("active", s.dataset.view === view));
