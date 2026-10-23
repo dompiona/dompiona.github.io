@@ -1,0 +1,1361 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Дом Пиона — авторская флористика</title>
+<meta name="description" content="Премиальные авторские букеты. 3D-конструктор с примеркой в комнате, ИИ-флорист, бонусы и кэшбэк, календарь заботы. Доставка за 2 часа, заказ в WhatsApp и Telegram.">
+<meta name="theme-color" content="#F6F1EA">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Дом Пиона">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1782038522861-22e8c23c96e5?auto=format&fit=crop&w=720&q=70" imagesrcset="https://images.unsplash.com/photo-1782038522861-22e8c23c96e5?auto=format&fit=crop&w=720&q=70 720w, https://images.unsplash.com/photo-1782038522861-22e8c23c96e5?auto=format&fit=crop&w=1200&q=70 1200w" imagesizes="(min-width:900px) 50vw, 100vw">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F6F1EA; --cream-2:#EFE7DC;
+  --sage:#CBD5C3; --sage-2:#A9B8A0; --sage-deep:#6F8466;
+  --powder:#EBD3CE; --blush:#F4E6E2; --rose:#C98F86;
+  --olive:#2E3829; --graphite:#2A2D2A; --muted:#6E7468; --line:rgba(46,56,41,.10);
+  --glass:rgba(255,255,255,.52); --glass-strong:rgba(255,255,255,.72); --glass-line:rgba(255,255,255,.75);
+  --shadow:0 10px 40px -12px rgba(46,56,41,.18); --shadow-lg:0 30px 70px -20px rgba(46,56,41,.28);
+  --wa:#1E9E60; --tg:#2A8FD1; --ok:#3E7F4F; --bad:#B4433A;
+  --serif:"Playfair Display",Georgia,serif;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  --spring:cubic-bezier(.34,1.4,.64,1); --ease:cubic-bezier(.22,.61,.36,1);
+  --r-lg:28px; --r:20px; --r-sm:14px;
+  --tab-h:68px; --safe-b:env(safe-area-inset-bottom,0px);
+  --bottom:calc(var(--tab-h) + 20px + var(--safe-b));
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--cream);color:var(--olive);font:400 16px/1.6 var(--sans);overflow-x:hidden;padding-bottom:var(--bottom);-webkit-font-smoothing:antialiased}
+/* живой фон: мягкие пятна, которые просвечивают сквозь стекло */
+body::before,body::after{content:"";position:fixed;z-index:-1;border-radius:50%;filter:blur(70px);opacity:.75;pointer-events:none}
+body::before{width:70vmax;height:70vmax;left:-25vmax;top:-20vmax;background:radial-gradient(circle,var(--sage) 0%,transparent 65%);animation:drift1 28s ease-in-out infinite alternate}
+body::after{width:60vmax;height:60vmax;right:-25vmax;top:30vh;background:radial-gradient(circle,var(--powder) 0%,transparent 65%);animation:drift2 32s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(12vmax,18vh) scale(1.1)}}
+@keyframes drift2{to{transform:translate(-10vmax,-14vh) scale(1.15)}}
+img{max-width:100%;display:block}
+a{color:inherit}
+button{font:inherit;cursor:pointer;color:inherit}
+input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.08;margin:0;letter-spacing:-.015em;color:var(--olive)}
+h2{font-size:clamp(32px,8.4vw,54px)}
+h3{font-size:22px}
+p{margin:0}
+:focus-visible{outline:2px solid var(--sage-deep);outline-offset:3px;border-radius:8px}
+.wrap{width:min(1120px,100% - 32px);margin-inline:auto}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* стекло */
+.glass{background:var(--glass);backdrop-filter:blur(22px) saturate(170%);-webkit-backdrop-filter:blur(22px) saturate(170%);border:1px solid var(--glass-line);box-shadow:var(--shadow)}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:0 24px;border-radius:999px;border:1px solid transparent;text-decoration:none;font-weight:500;font-size:16px;letter-spacing:-.005em;transition:transform .45s var(--spring),box-shadow .4s var(--ease),background .3s;white-space:nowrap;user-select:none}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:scale(.96);transition-duration:.12s}
+.btn svg{width:21px;height:21px;flex:none}
+.btn.block{width:100%}
+.btn-dark{background:var(--olive);color:var(--cream);box-shadow:0 12px 26px -10px rgba(46,56,41,.55)}
+.btn-dark:hover{box-shadow:0 18px 34px -12px rgba(46,56,41,.6)}
+.btn-glass{background:var(--glass-strong);border-color:var(--glass-line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);color:var(--olive);box-shadow:var(--shadow)}
+.btn-line{border-color:rgba(46,56,41,.22);color:var(--olive);background:transparent}
+.btn-wa{background:var(--wa);color:#fff}
+.btn-tg{background:var(--tg);color:#fff}
+.btn-sm{min-height:42px;padding:0 16px;font-size:14px}
+.btn:hover .ic-msg{animation:wiggle .6s var(--ease)}
+@keyframes wiggle{25%{transform:rotate(-12deg)}60%{transform:rotate(9deg)}}
+.icon-btn{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--glass-line);background:var(--glass-strong);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:transform .4s var(--spring)}
+.icon-btn:active{transform:scale(.9)}
+.icon-btn svg{width:20px;height:20px}
+
+/* верхняя панель */
+.topbar{position:sticky;top:0;z-index:40;padding:calc(env(safe-area-inset-top,0px) + 10px) 0 10px}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px;padding:0 8px 0 14px;border-radius:999px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo img{width:32px;height:32px;border-radius:10px}
+.logo b{font-family:var(--serif);font-size:21px;font-weight:500}
+.points-pill{display:flex;align-items:center;gap:7px;background:var(--olive);color:var(--cream);border-radius:999px;padding:0 14px 0 11px;height:40px;font-size:14px;font-weight:600;text-decoration:none;transition:transform .4s var(--spring)}
+.points-pill:active{transform:scale(.94)}
+.points-pill svg{width:17px;height:17px;color:var(--powder)}
+
+/* экраны */
+.view{display:none}
+.view.active{display:block;animation:viewIn .55s var(--ease)}
+@keyframes viewIn{from{opacity:0;transform:translateY(12px)}}
+.sec{padding:52px 0}
+.sec-head{margin-bottom:24px}
+.sec-head p{margin-top:10px;max-width:46ch}
+.row-head{display:flex;justify-content:space-between;align-items:end;gap:12px}
+
+/* нижнее меню: стеклянная капсула в зоне большого пальца */
+.tabbar{position:fixed;left:12px;right:12px;bottom:calc(10px + var(--safe-b));z-index:45;height:var(--tab-h);border-radius:26px;display:grid;grid-template-columns:repeat(5,1fr);padding:0 6px}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-decoration:none;font-size:11px;font-weight:500;color:var(--muted);position:relative;border-radius:20px;margin:6px 0;transition:color .3s}
+.tab svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .5s var(--spring)}
+.tab.active{color:var(--olive);background:rgba(255,255,255,.75);box-shadow:0 4px 14px -6px rgba(46,56,41,.25)}
+.tab.active svg{transform:translateY(-1px) scale(1.06)}
+.tab:active svg{transform:scale(.82)}
+@media (min-width:900px){
+  .tabbar{left:50%;right:auto;width:540px;transform:translateX(-50%);bottom:18px}
+}
+
+/* главная */
+.hero{padding:6px 0 20px}
+.hero-photo{position:relative;height:min(46svh,420px);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-lg);transform-style:preserve-3d}
+.hero-photo img{width:100%;height:100%;object-fit:cover;transform:scale(1.12);animation:kb 2.6s var(--ease) forwards;will-change:transform}
+@keyframes kb{to{transform:scale(1.02)}}
+.hero-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(246,241,234,.35))}
+.float-chip{position:absolute;z-index:2;display:flex;align-items:center;gap:8px;padding:9px 14px 9px 10px;border-radius:999px;font-size:13px;font-weight:500;animation:bob 6s ease-in-out infinite}
+.float-chip i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--olive);color:var(--cream)}
+.float-chip i svg{width:14px;height:14px}
+.float-chip.c1{left:14px;top:16px}
+.float-chip.c2{right:14px;bottom:20px;animation-delay:-3s}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.petal{position:absolute;z-index:1;width:18px;height:22px;opacity:.85;pointer-events:none;animation:fall linear infinite}
+@keyframes fall{0%{transform:translate(0,-40px) rotate(0)}100%{transform:translate(60px,110%) rotate(320deg)}}
+.hero-text{padding:28px 4px 0}
+.hero h1{font-size:clamp(42px,11.5vw,84px);line-height:1;letter-spacing:-.025em}
+.hero h1 em{font-style:italic;color:var(--sage-deep)}
+.line{display:block;overflow:hidden;padding-bottom:.06em}
+.line>span{display:block;animation:rise 1.1s var(--ease) both}
+.line+.line>span{animation-delay:.12s}
+@keyframes rise{from{transform:translateY(105%)}}
+.hero .lead{margin:16px 0 24px;color:var(--muted);font-size:17px;max-width:42ch}
+.hero-cta{display:grid;gap:10px}
+.fade{animation:fade 1s var(--ease) .4s both}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
+@media (min-width:900px){
+  .hero-photo{height:min(70vh,600px)}
+  .hero{padding:24px 0 40px}
+  .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .hero-text{padding:0;order:-1}
+  .hero-cta{grid-template-columns:auto auto;justify-content:start}
+}
+
+/* забота: баннер напоминания */
+.care-banner{margin-top:14px;border-radius:var(--r);padding:16px;display:flex;gap:14px;align-items:center}
+.care-banner .cd{width:54px;height:54px;border-radius:16px;background:var(--olive);color:var(--cream);display:grid;place-items:center;text-align:center;flex:none;line-height:1}
+.care-banner .cd b{font-family:var(--serif);font-size:22px;display:block}
+.care-banner .cd small{font-size:10px}
+.care-banner p{font-size:14px;flex:1;line-height:1.4}
+.care-banner p b{display:block;font-size:15px}
+
+/* преимущества с анимированными иконками */
+.perks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.perk{border-radius:var(--r);padding:18px 16px;transition:transform .5s var(--spring)}
+.perk:hover{transform:translateY(-4px)}
+.perk h3{font-size:18px;margin:10px 0 4px;line-height:1.15}
+.perk p{font-size:13px;color:var(--muted);line-height:1.4}
+@media (min-width:900px){.perks{grid-template-columns:repeat(4,1fr);gap:16px}.perk{padding:26px 22px}}
+.icon{width:48px;height:48px;color:var(--sage-deep);overflow:visible}
+.icon *{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.icon .fill{fill:var(--powder);stroke:none}
+.icon .draw{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.5s var(--ease)}
+.on .icon .draw{stroke-dashoffset:0}
+.ic-bloom .petals{transform-origin:32px 30px;transform:scale(.2) rotate(-40deg);opacity:0;transition:transform 1.3s var(--spring) .3s,opacity .8s .3s}
+.on .ic-bloom .petals{transform:none;opacity:1}
+.on .ic-bloom .pin{animation:breathe 4s ease-in-out 1.8s infinite;transform-origin:32px 30px}
+.on .ic-bloom .leaf{animation:sway 4s ease-in-out 1.8s infinite;transform-origin:32px 50px}
+@keyframes breathe{50%{transform:scale(1.08) rotate(8deg)}}
+@keyframes sway{50%{transform:rotate(-7deg)}}
+.ic-van .wheel{transform-box:fill-box;transform-origin:center}
+.on .ic-van .wheel{animation:spin 1.1s linear infinite}
+.ic-van .speed{stroke-dasharray:6 30}
+.on .ic-van .speed{animation:speed 1s linear infinite}
+.on .ic-van .body{animation:bump .6s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes speed{to{stroke-dashoffset:36}}
+@keyframes bump{50%{transform:translateY(-1px)}}
+.ic-cube .face{transform-box:view-box;transform-origin:32px 32px}
+.on .ic-cube .face{animation:turn 5s var(--ease) 1.5s infinite}
+@keyframes turn{0%,40%{transform:rotate(0)}55%,90%{transform:rotate(-12deg) scale(1.06)}100%{transform:rotate(0)}}
+.ic-spark .star{transform-box:fill-box;transform-origin:center;opacity:0}
+.on .ic-spark .star{animation:twinkle 2.6s ease-in-out 1.5s infinite}
+.on .ic-spark .star:nth-of-type(2){animation-delay:2.1s}
+.on .ic-spark .star:nth-of-type(3){animation-delay:2.6s}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.3)}40%{opacity:1;transform:scale(1)}70%{opacity:0;transform:scale(.6) rotate(45deg)}}
+
+/* лента карточек */
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:68%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 16px 18px;margin:0 -16px;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.rail>*{scroll-snap-align:start}
+@media (min-width:900px){.rail{grid-auto-columns:calc(25% - 9px);margin:0;padding:4px 0 18px}}
+
+/* карточка букета: матовое стекло */
+.card{display:flex;flex-direction:column;min-width:0;border-radius:var(--r-lg);padding:8px 8px 14px;transition:transform .55s var(--spring),box-shadow .5s var(--ease)}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.card[hidden]{display:none}
+.card .ph{position:relative;aspect-ratio:4/5;overflow:hidden;border-radius:22px;background:var(--cream-2)}
+.card .ph img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.card:hover .ph img{transform:scale(1.06)}
+.tag{position:absolute;left:8px;top:8px;background:var(--glass-strong);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:11px;font-weight:600;padding:5px 10px;border-radius:999px}
+.ph .b3d{position:absolute;right:8px;top:8px;width:38px;height:38px;border-radius:50%;border:1px solid var(--glass-line);background:var(--glass-strong);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:grid;place-items:center;font-size:11px;font-weight:600}
+.card .body{padding:12px 6px 0;display:flex;flex-direction:column;flex:1}
+.card h3{font-size:19px;margin-bottom:3px}
+.card p{font-size:13px;line-height:1.4;flex:1;margin-bottom:10px;color:var(--muted)}
+.card .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.price{font-family:var(--serif);font-size:20px;font-weight:600}
+.fl.out small{color:var(--rose)}
+.ph .fav{position:absolute;right:8px;bottom:8px;width:40px;height:40px;border-radius:50%;border:1px solid var(--glass-line);background:var(--glass-strong);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:grid;place-items:center;color:var(--olive);transition:transform .45s var(--spring)}
+.ph .fav svg{width:20px;height:20px;fill:none}
+.ph .fav[aria-pressed="true"]{color:var(--rose)}
+.ph .fav[aria-pressed="true"] svg{fill:currentColor}
+.ph .fav:active{transform:scale(.82)}
+.stock-off{position:absolute;left:8px;bottom:8px;max-width:calc(100% - 64px);background:rgba(46,56,41,.82);color:var(--cream);font-size:11px;font-weight:600;padding:5px 10px;border-radius:999px;line-height:1.25}
+.fav-bar[hidden]{display:none}
+.fav-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;border-radius:20px;padding:8px 8px 8px 16px;margin:0 0 14px;font-size:14px}
+.fav-bar span{display:flex;align-items:center;gap:8px}
+.fav-bar svg{width:18px;height:18px;color:var(--rose);fill:currentColor}
+.rev-avg{font-size:15px;font-weight:600;color:var(--olive);white-space:nowrap}
+.rev-rail{grid-auto-columns:78%}
+@media (min-width:700px){.rev-rail{grid-auto-columns:32%}}
+.rev{border-radius:var(--r-lg);padding:10px 10px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.rev img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:18px;background:var(--cream-2)}
+.rev .st{color:#C9A24A;letter-spacing:2px;font-size:15px;padding:0 6px}
+.rev p{font-size:14px;line-height:1.45;padding:0 6px;margin:0;display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+.rev small{color:var(--muted);font-size:12px;padding:0 6px}
+.track{display:flex;gap:4px;margin:8px 0 2px}
+.track i{flex:1;height:4px;border-radius:4px;background:var(--line)}
+.track i.on{background:var(--sage-deep)}
+.order-ph{display:block;width:72px;height:72px;border-radius:14px;object-fit:cover;flex:none}
+.ord{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.ord:last-child{border-bottom:0}
+.ord .oi{flex:1;min-width:0;font-size:14px}
+.ord .oi small{display:block;color:var(--muted);font-size:12px}
+.hint-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:12px 0}
+.hint-item{border-radius:18px;padding:6px 6px 10px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.hint-item img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:14px}
+.hint-item b{font-size:14px;padding:0 4px}
+.unfav{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.7);font-size:18px;line-height:1;color:var(--muted);display:grid;place-items:center;flex:none}
+.hint-item .row{display:flex;justify-content:space-between;align-items:center;padding:0 4px}
+.add{width:44px;height:44px;border-radius:50%;border:0;background:var(--olive);color:var(--cream);display:grid;place-items:center;flex:none;transition:transform .45s var(--spring)}
+.add svg{width:19px;height:19px}
+.add:active{transform:scale(.85) rotate(90deg)}
+
+/* клуб */
+.promo{border-radius:var(--r-lg);padding:26px 22px;position:relative;overflow:hidden;background:linear-gradient(140deg,rgba(203,213,195,.7),rgba(235,211,206,.7));border:1px solid var(--glass-line)}
+.promo h3{font-size:30px;margin-bottom:6px}
+.promo ul{margin:16px 0 20px;padding:0;list-style:none;display:grid;gap:8px;font-size:15px}
+.promo li{display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.55)}
+.promo li b{font-weight:600;min-width:62px}
+
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:44px 1fr;gap:2px 12px;align-items:center;padding:14px 16px;border-radius:var(--r)}
+.steps li::before{counter-increment:s;content:counter(s);width:40px;height:40px;border-radius:50%;background:var(--olive);color:var(--cream);display:grid;place-items:center;font-family:var(--serif);font-size:18px;grid-row:span 2}
+.steps h3{font-size:18px}
+.steps p{font-size:13px;color:var(--muted)}
+@media (min-width:900px){.steps{grid-template-columns:repeat(4,1fr)}}
+
+.strip-wrap{overflow:hidden;padding:6px 0}
+.strip{display:flex;gap:12px;width:max-content;animation:marquee 70s linear infinite}
+.strip img{height:210px;width:160px;object-fit:cover;border-radius:22px}
+.strip img:nth-child(3n+2){margin-top:22px;height:188px}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+.contacts{display:grid;gap:10px}
+.c-row{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:var(--r);text-decoration:none;min-height:66px;transition:transform .45s var(--spring)}
+.c-row:active{transform:scale(.98)}
+.c-row .ci{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;flex:none;color:#fff}
+.c-row .ci svg{width:22px;height:22px}
+.c-row small{display:block;color:var(--muted);font-size:13px}
+.footer{padding:24px 0 30px;color:var(--muted);font-size:13px;text-align:center}
+
+/* каталог */
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:10px 16px 14px;margin:0 -16px;position:sticky;top:calc(76px + env(safe-area-inset-top,0px));z-index:5}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;min-height:42px;border:1px solid var(--glass-line);background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:999px;padding:0 17px;font-size:14px;font-weight:500;transition:all .35s var(--spring)}
+.chip:active{transform:scale(.94)}
+.chip[aria-pressed="true"]{background:var(--olive);border-color:var(--olive);color:var(--cream)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid .card h3{font-size:17px}
+@media (min-width:900px){.grid{grid-template-columns:repeat(4,1fr);gap:18px}}
+
+/* 3D-конструктор */
+.stage{position:relative;border-radius:var(--r-lg);overflow:hidden;height:min(56svh,520px);background:radial-gradient(120% 90% at 50% 20%,#fff 0%,var(--blush) 45%,var(--sage) 120%);box-shadow:var(--shadow-lg);touch-action:none}
+.stage canvas{display:block;width:100%!important;height:100%!important;outline:none}
+.stage.drop{box-shadow:0 0 0 3px var(--sage-deep),var(--shadow-lg)}
+.stage-load{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:14px;padding:20px}
+.stage-load i{display:block;width:34px;height:34px;margin:0 auto 10px;border-radius:50%;border:2px solid var(--sage);border-top-color:var(--olive);animation:spin 1s linear infinite}
+.stage-ui{position:absolute;left:10px;right:10px;top:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;pointer-events:none}
+.stage-ui>*{pointer-events:auto}
+.harmony{display:flex;align-items:center;gap:10px;padding:8px 12px 8px 8px;border-radius:18px;max-width:72%}
+.ring{width:44px;height:44px;flex:none;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:4}
+.ring .bg{stroke:rgba(46,56,41,.1)}
+.ring .fg{stroke:var(--sage-deep);stroke-linecap:round;stroke-dasharray:113;stroke-dashoffset:113;transition:stroke-dashoffset .8s var(--spring),stroke .4s}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:600}
+.harmony p{font-size:12px;line-height:1.3}
+.harmony p b{display:block;font-size:13px}
+.stage-tools{display:flex;flex-direction:column;gap:8px}
+.stage-hint{position:absolute;left:10px;bottom:16px;max-width:calc(100% - 160px);font-size:12px;padding:7px 12px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .5s}
+.ar-btn{position:absolute;right:10px;bottom:10px;min-height:46px;padding:0 16px;font-size:14px}
+.tray{display:grid;grid-auto-flow:column;grid-auto-columns:96px;gap:10px;overflow-x:auto;scrollbar-width:none;padding:14px 16px 6px;margin:0 -16px;touch-action:pan-x;overscroll-behavior-x:contain;scroll-snap-type:x proximity}
+.tray>*{scroll-snap-align:start}
+.tray::-webkit-scrollbar{display:none}
+.fl{border-radius:20px;padding:10px 8px 10px;text-align:center;touch-action:pan-x;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;cursor:grab;transition:transform .45s var(--spring),box-shadow .3s;border:1px solid var(--glass-line)}
+.fl.hold{transform:scale(1.08) translateY(-4px);box-shadow:0 0 0 2px var(--sage-deep),var(--shadow-lg)}
+.tray.dragging{overflow-x:hidden}
+.tray-hint{font-size:12px;color:var(--muted);margin:2px 0 0;text-align:center}
+@media (max-width:699px){
+  /* на телефоне сцена и лента цветов помещаются над панелью с ценой */
+  #v-build .stage{height:min(41svh,420px)}
+  #v-build .build-intro{display:none}
+  #v-build h2{font-size:30px}
+}
+.fl:active{cursor:grabbing;transform:scale(.94)}
+.fl .fi{width:54px;height:54px;margin:0 auto 6px;border-radius:50%;display:grid;place-items:center}
+.fl .fi svg{width:44px;height:44px}
+.fl b{display:block;font-size:13px;font-weight:600;line-height:1.2}
+.fl small{font-size:12px;color:var(--muted)}
+.ghost{position:fixed;z-index:100;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;pointer-events:none;display:grid;place-items:center;background:var(--glass-strong);backdrop-filter:blur(10px);box-shadow:var(--shadow-lg);transform:scale(1.1)}
+.ghost svg{width:48px;height:48px}
+.b-block{margin-top:18px}
+.b-block h3{font-size:19px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:baseline}
+.b-block h3 small{font-family:var(--sans);font-size:13px;color:var(--muted);font-weight:400}
+.swatches{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding:4px 2px 6px}
+.sw{position:relative;flex:none}
+.sw input{position:absolute;opacity:0}
+.sw label{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;cursor:pointer;color:var(--muted);width:56px}
+.sw i{width:44px;height:44px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line),0 4px 10px -4px rgba(0,0,0,.2);transition:transform .45s var(--spring),box-shadow .3s}
+.sw input:checked+label i{transform:scale(1.12);box-shadow:0 0 0 2px var(--olive),0 6px 14px -4px rgba(0,0,0,.25)}
+.sw input:checked+label{color:var(--olive);font-weight:600}
+.sw input:focus-visible+label i{outline:2px solid var(--sage-deep);outline-offset:3px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;border-radius:16px;padding:4px;gap:4px}
+.seg input{position:absolute;opacity:0}
+.seg label{min-height:48px;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;transition:background .3s,box-shadow .3s;text-align:center;line-height:1.15;padding:4px}
+.seg label small{font-size:11px;color:var(--muted);font-weight:400}
+.seg input:checked+label{background:#fff;box-shadow:0 4px 12px -4px rgba(46,56,41,.25)}
+.seg input:focus-visible+label{outline:2px solid var(--sage-deep)}
+.compo{display:flex;flex-wrap:wrap;gap:6px;min-height:36px}
+.compo span{display:inline-flex;align-items:center;gap:6px;padding:6px 6px 6px 12px;border-radius:999px;background:var(--glass-strong);border:1px solid var(--glass-line);font-size:13px}
+.compo button{width:24px;height:24px;border-radius:50%;border:0;background:var(--cream-2);font-size:14px;line-height:1}
+.compo .empty{background:none;border:0;padding:0;color:var(--muted)}
+.dock{position:sticky;bottom:calc(var(--bottom) + 8px);z-index:20;margin-top:18px;display:flex;align-items:center;gap:12px;border-radius:24px;padding:8px 8px 8px 18px}
+.dock div{flex:1;line-height:1.2;min-width:0}
+.dock small{font-size:12px;color:var(--muted);display:block}
+.dock b{font-family:var(--serif);font-size:26px;font-weight:600}
+.bump{animation:bumpN .5s var(--spring)}
+@keyframes bumpN{40%{transform:scale(1.14)}}
+
+/* квиз */
+.quiz{min-height:calc(100svh - 80px - var(--bottom));display:flex;flex-direction:column;padding:16px 0 20px}
+.q-progress{height:5px;background:rgba(46,56,41,.08);border-radius:5px;overflow:hidden;margin-bottom:24px}
+.q-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--sage-deep),var(--rose));border-radius:5px;transition:width .7s var(--spring)}
+.q-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:14px;color:var(--muted)}
+.q-back{border:0;background:none;color:var(--muted);min-height:44px;padding:0}
+.q-title{font-size:clamp(30px,8.6vw,46px);margin-bottom:20px}
+.q-body{flex:1;display:flex;flex-direction:column;justify-content:flex-end}
+.q-answers{display:grid;gap:10px}
+.q-ans{display:flex;align-items:center;gap:14px;min-height:62px;border-radius:20px;padding:0 18px;text-align:left;font-size:16px;font-weight:500;transition:transform .45s var(--spring),background .3s,border-color .3s}
+.q-ans:active{transform:scale(.97)}
+.q-ans.sel{background:#fff;border-color:var(--sage-deep)}
+.q-ans .e{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--sage);color:var(--olive)}
+.q-ans .e svg{width:17px;height:17px}
+.q-ans .dot{width:32px;height:32px;border-radius:50%;flex:none;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.q-anim{animation:qIn .55s var(--ease)}
+@keyframes qIn{from{opacity:0;transform:translateX(28px)}}
+.q-gift{border-radius:var(--r-lg);padding:22px;margin-top:16px;background:linear-gradient(140deg,rgba(235,211,206,.85),rgba(203,213,195,.85));border:1px solid var(--glass-line)}
+.q-gift h3{font-size:26px;margin-bottom:6px}
+.q-gift p{font-size:14px;margin-bottom:14px;color:var(--olive)}
+.q-res{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* кабинет */
+.loy-card{border-radius:var(--r-lg);padding:22px;position:relative;overflow:hidden;min-height:214px;display:flex;flex-direction:column;color:var(--cream);background:linear-gradient(135deg,#3E4B37 0%,var(--olive) 60%,#252D21 100%);box-shadow:var(--shadow-lg)}
+.loy-card::before{content:"";position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.14) 50%,transparent 60%);animation:sheen 6s ease-in-out infinite}
+@keyframes sheen{0%,60%{transform:translateX(-40%)}100%{transform:translateX(40%)}}
+.loy-card h3,.loy-card b{color:var(--cream)}
+.loy-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative}
+.lvl{font-size:12px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(8px);font-weight:600}
+.bal{margin-top:auto;position:relative}
+.bal b{font-family:var(--serif);font-size:54px;font-weight:500;line-height:1}
+.bal small{display:block;color:rgba(246,241,234,.7);font-size:13px}
+.lvl-bar{height:6px;background:rgba(255,255,255,.15);border-radius:6px;margin-top:14px;overflow:hidden;position:relative}
+.lvl-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--sage),var(--powder));border-radius:6px;transition:width 1.2s var(--spring)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.kpi{border-radius:18px;padding:14px 12px}
+.kpi b{display:block;font-family:var(--serif);font-size:24px;font-weight:600;line-height:1.1}
+.kpi small{font-size:12px;color:var(--muted);line-height:1.3;display:block}
+.panel{border-radius:var(--r-lg);padding:20px;margin-top:10px}
+.panel h3{font-size:23px;margin-bottom:6px}
+.panel>p{font-size:14px;color:var(--muted)}
+.ref-box{display:flex;gap:8px;margin:14px 0 10px}
+.ref-box input{flex:1;min-width:0;background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:14px;padding:0 14px;min-height:50px;font-size:14px}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn-row .btn{min-width:0;white-space:normal;text-align:center;line-height:1.2;padding:0 12px}
+.levels{display:grid;gap:8px;margin-top:14px}
+.level{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.45);border:1px solid transparent}
+.level.cur{border-color:var(--sage-deep);background:#fff}
+.level b{font-family:var(--serif);font-size:19px;font-weight:500;flex:1}
+.level span{font-size:13px;color:var(--muted)}
+.level em{font-style:normal;font-weight:600;font-size:17px;min-width:44px;text-align:right}
+.hist{list-style:none;margin:12px 0 0;padding:0}
+.hist li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px;align-items:center}
+.hist li:last-child{border-bottom:0}
+.hist small{display:block;color:var(--muted);font-size:12px}
+.plus{color:var(--ok);font-weight:600;white-space:nowrap}
+.minus{color:var(--rose);font-weight:600;white-space:nowrap}
+.wait{color:var(--muted);font-weight:600;white-space:nowrap}
+.empty{font-size:14px;color:var(--muted);padding:10px 0 0}
+.steps-mini{margin:10px 0 0;padding-left:20px;font-size:14px;line-height:1.5;color:var(--ink,inherit)}
+.steps-mini li{margin:4px 0}
+.wait-dots::after{content:"";display:inline-block;width:1.2em;text-align:left;animation:dots 1.4s steps(4,end) infinite}
+@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+@media (prefers-reduced-motion:reduce){.wait-dots::after{animation:none;content:"…"}}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:54px;font-size:14px}
+.switch{position:relative;width:54px;height:32px;flex:none}
+.switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:1}
+.switch i{position:absolute;inset:0;border-radius:999px;background:rgba(46,56,41,.15);transition:background .3s}
+.switch i::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:transform .45s var(--spring)}
+.switch input:checked+i{background:var(--sage-deep)}
+.switch input:checked+i::after{transform:translateX(22px)}
+.switch input:focus-visible+i{outline:2px solid var(--sage-deep);outline-offset:2px}
+.ev{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.ev:last-child{border-bottom:0}
+.ev .cd{width:50px;height:50px;border-radius:15px;flex:none;display:grid;place-items:center;text-align:center;line-height:1;background:#fff;border:1px solid var(--line)}
+.ev .cd b{font-family:var(--serif);font-size:19px;display:block}
+.ev .cd small{font-size:10px;color:var(--muted)}
+.ev.soon .cd{background:var(--olive);color:var(--cream);border-color:var(--olive)}
+.ev.soon .cd small{color:rgba(246,241,234,.75)}
+.ev div.t{flex:1;min-width:0;font-size:14px;line-height:1.35}
+.ev div.t b{display:block;font-size:15px}
+.ev .x{width:36px;height:36px;border-radius:50%;border:0;background:transparent;color:var(--muted);font-size:18px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.presets button{min-height:38px;padding:0 13px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.6);font-size:13px}
+
+/* поля */
+.fields{display:grid;gap:12px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:13px;font-weight:600;color:var(--olive)}
+.field input,.field select,.field textarea{font-size:16px;background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:14px;padding:0 14px;min-height:52px;width:100%;transition:border-color .3s,box-shadow .3s;-webkit-appearance:none;appearance:none}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%232E3829' stroke-width='1.8' d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:18px;padding-right:38px}
+.field textarea{padding:12px 14px;min-height:88px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--sage-deep);box-shadow:0 0 0 4px rgba(111,132,102,.15)}
+.field.bad input{border-color:var(--bad)}
+.field .err{display:none;font-size:12px;color:var(--bad)}
+.field.bad .err{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lbl-row{display:flex;justify-content:space-between;align-items:center}
+.ai-link{border:0;background:linear-gradient(90deg,var(--sage),var(--powder));border-radius:999px;font-size:12px;font-weight:600;padding:6px 12px;display:inline-flex;gap:6px;align-items:center}
+.ai-link svg{width:14px;height:14px}
+.pick{display:flex;flex-wrap:wrap;gap:6px}
+.pick button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.7);font-size:14px;transition:all .35s var(--spring)}
+.pick button[aria-pressed="true"]{background:var(--olive);color:var(--cream);border-color:var(--olive)}
+.variants{display:grid;gap:10px;margin-top:14px}
+.variant{border-radius:18px;padding:16px;background:#fff;border:1px solid var(--line);font-family:var(--serif);font-size:17px;line-height:1.45;animation:fade .6s var(--ease) both}
+.variant:nth-child(2){animation-delay:.08s}.variant:nth-child(3){animation-delay:.16s}
+.variant button{display:block;margin-top:12px;font-family:var(--sans)}
+.photo-in{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 12px;border-radius:14px;border:1px dashed rgba(46,56,41,.25);cursor:pointer;font-size:14px}
+.photo-in img{width:40px;height:40px;border-radius:10px;object-fit:cover}
+.photo-in input{position:absolute;opacity:0;width:1px}
+
+/* шторки */
+.sheet-bg{position:fixed;inset:0;background:rgba(46,56,41,.25);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:70;opacity:0;pointer-events:none;transition:opacity .4s}
+.sheet-bg.show{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:71;max-height:92svh;background:rgba(250,247,242,.88);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);border-radius:30px 30px 0 0;border:1px solid var(--glass-line);transform:translateY(105%);transition:transform .6s var(--spring);display:flex;flex-direction:column;padding-bottom:var(--safe-b);box-shadow:0 -20px 60px -20px rgba(46,56,41,.3)}
+.sheet.show{transform:none}
+@media (min-width:700px){.sheet{left:50%;right:auto;width:560px;margin-left:-280px;bottom:20px;border-radius:30px;max-height:88vh}}
+.sheet-h{padding:10px 20px 8px;position:relative;flex:none}
+.sheet-h::before{content:"";display:block;width:42px;height:5px;border-radius:5px;background:rgba(46,56,41,.18);margin:0 auto 12px}
+.sheet-h h3{font-size:26px;padding-right:50px}
+.sheet-x{position:absolute;right:12px;top:16px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(46,56,41,.07);font-size:22px;line-height:1;display:grid;place-items:center}
+.sheet-b{overflow-y:auto;padding:6px 20px 20px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sheet-f{flex:none;padding:12px 20px 14px;border-top:1px solid var(--line)}
+.sum{display:grid;gap:4px;font-size:14px;margin:2px 0 12px}
+.sum div{display:flex;justify-content:space-between;gap:10px}
+.sum div span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sum .tot{font-size:15px;font-weight:600;padding-top:6px;border-top:1px dashed var(--line);margin-top:4px;align-items:baseline}
+.sum .tot b{font-family:var(--serif);font-size:26px;font-weight:600}
+.sum .disc{color:var(--ok)}
+.pts-box{background:rgba(255,255,255,.6);border-radius:16px;padding:12px 14px;border:1px solid var(--line)}
+.pts-box small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
+#arSheet model-viewer{width:100%;height:56svh;border-radius:22px;background:radial-gradient(circle at 50% 30%,#fff,var(--blush));--poster-color:transparent}
+.ar-cta{position:absolute;left:50%;bottom:14px;transform:translateX(-50%)}
+
+/* чат */
+.chat-fab{position:fixed;right:16px;bottom:calc(var(--bottom) + 10px);z-index:44;width:58px;height:58px;border-radius:20px;border:0;background:var(--olive);color:var(--cream);display:grid;place-items:center;box-shadow:0 16px 30px -10px rgba(46,56,41,.6);transition:transform .5s var(--spring)}
+.chat-fab:active{transform:scale(.9)}
+.chat-fab::after{content:"";position:absolute;inset:-4px;border-radius:24px;border:1.5px solid var(--sage-deep);animation:pulse 3s ease-out infinite}
+@keyframes pulse{from{transform:scale(1);opacity:.7}to{transform:scale(1.35);opacity:0}}
+.chat-fab svg{width:26px;height:26px}
+.chat-fab .dotn{position:absolute;top:-3px;right:-3px;width:16px;height:16px;border-radius:50%;background:var(--rose);border:3px solid var(--cream)}
+@media (min-width:900px){.chat-fab{bottom:24px;right:28px}}
+.hide-fab .chat-fab{display:none}
+.no-fab .chat-fab{display:none}
+#chatSheet{height:90svh}
+#chatSheet .sheet-b{flex:1;display:flex;flex-direction:column;gap:10px;padding-top:10px}
+#chatSheet .sheet-b>*{flex-shrink:0}
+.msg.sys{padding:2px 4px;font-size:13px;color:var(--muted)}
+.bot-h{display:flex;align-items:center;gap:12px}
+.bot-h .av{width:46px;height:46px;border-radius:16px;flex:none;background:linear-gradient(135deg,var(--sage),var(--powder));display:grid;place-items:center}
+.bot-h .av svg{width:26px;height:26px;color:var(--olive)}
+.bot-h h3{font-size:22px;padding:0}
+.bot-h small{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.bot-h small i{width:8px;height:8px;border-radius:50%;background:var(--wa)}
+.msg{max-width:86%;padding:11px 15px;border-radius:20px;font-size:15px;line-height:1.5;animation:msgIn .45s var(--spring);white-space:pre-line}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px) scale(.96)}}
+.msg.bot{background:#fff;border-bottom-left-radius:6px;align-self:flex-start;box-shadow:0 4px 14px -8px rgba(46,56,41,.25)}
+.msg.me{background:var(--olive);color:var(--cream);border-bottom-right-radius:6px;align-self:flex-end}
+.msg.meaning{background:linear-gradient(140deg,rgba(203,213,195,.7),rgba(235,211,206,.7));border:1px solid var(--glass-line)}
+.msg.meaning b{font-family:var(--serif);font-size:16px;display:block;margin-bottom:2px}
+.typing{display:flex;gap:4px;padding:15px 16px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--sage-2);animation:typ 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes typ{30%{transform:translateY(-4px);opacity:1}0%,60%,100%{opacity:.4}}
+.quick{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-start;max-width:100%}
+.quick button{min-height:40px;border:1px solid var(--line);background:rgba(255,255,255,.75);border-radius:999px;padding:0 14px;font-size:14px;transition:transform .4s var(--spring)}
+.quick button:active{transform:scale(.94)}
+.chat-cards{display:grid;grid-auto-flow:column;grid-auto-columns:150px;gap:10px;overflow-x:auto;align-self:stretch;scrollbar-width:none;padding-bottom:4px}
+.chat-cards::-webkit-scrollbar{display:none}
+.chat-card{background:#fff;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 4px 14px -8px rgba(46,56,41,.25)}
+.chat-card img{aspect-ratio:1;object-fit:cover;width:100%}
+.chat-card div{padding:8px 10px 10px;font-size:13px;line-height:1.3;flex:1;display:flex;flex-direction:column;gap:5px}
+.chat-card b{font-family:var(--serif);font-size:16px;font-weight:500}
+.chat-card button{min-height:38px;border-radius:999px;border:0;background:var(--olive);color:var(--cream);font-size:13px;margin-top:auto}
+.basket{align-self:stretch;background:#fff;border-radius:18px;padding:14px;font-size:14px;box-shadow:0 4px 14px -8px rgba(46,56,41,.25)}
+.basket h4{margin:0 0 8px;font-family:var(--serif);font-weight:500;font-size:18px}
+.basket div.r{display:flex;justify-content:space-between;padding:4px 0}
+.basket div.r.t{border-top:1px dashed var(--line);margin-top:6px;padding-top:8px;font-weight:600}
+.basket button{margin-top:10px}
+.chat-in{display:flex;gap:8px;align-items:center}
+.chat-in input{flex:1;min-width:0;min-height:52px;border-radius:999px;border:1px solid var(--line);background:#fff;padding:0 18px;font-size:16px}
+.chat-in input:focus{outline:none;border-color:var(--sage-deep)}
+.chat-in button{width:52px;height:52px;border-radius:50%;border:0;background:var(--olive);color:var(--cream);display:grid;place-items:center;flex:none;transition:transform .4s var(--spring)}
+.chat-in button:active{transform:scale(.88)}
+.chat-in button svg{width:21px;height:21px}
+
+.toast{position:fixed;left:50%;bottom:calc(var(--bottom) + 14px);transform:translate(-50%,16px);background:var(--olive);color:var(--cream);padding:13px 20px;border-radius:18px;font-size:14px;width:max-content;max-width:calc(100% - 32px);box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:all .5s var(--spring);z-index:90;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.cart-btn{position:relative;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.55);color:var(--olive);display:grid;place-items:center;flex:none;transition:transform .4s var(--spring)}
+.cart-btn svg{width:20px;height:20px}
+.cart-btn:active{transform:scale(.9)}
+.cart-btn i{position:absolute;top:-3px;right:-3px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:var(--olive);color:var(--cream);font:700 11px/19px Inter,system-ui,sans-serif;font-style:normal;text-align:center;box-shadow:0 0 0 2px var(--cream)}
+.cart-btn i[hidden]{display:none}
+.cart-btn.bump{animation:cartBump .6s var(--spring)}
+@keyframes cartBump{0%{transform:scale(1)}30%{transform:scale(1.22)}60%{transform:scale(.94)}100%{transform:scale(1)}}
+.cart{display:flex;flex-direction:column;gap:8px}
+.cart-row{display:flex;align-items:center;gap:12px;padding:8px;border-radius:18px;background:rgba(255,255,255,.55);border:1px solid rgba(46,56,41,.08);animation:msgIn .45s var(--spring) both}
+.cart-row img,.cart-3d{width:52px;height:52px;border-radius:14px;object-fit:cover;flex:none}
+.cart-3d{display:grid;place-items:center;background:var(--sage);color:var(--olive);font-weight:700;font-size:13px}
+.cart-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.cart-info b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cart-info span{font-size:13px;opacity:.7}
+.qty{display:flex;align-items:center;gap:2px;background:rgba(46,56,41,.06);border-radius:999px;padding:3px;flex:none}
+.qty button{width:32px;height:32px;border:0;border-radius:50%;background:transparent;color:var(--olive);font-size:18px;line-height:1}
+.qty button:active{background:rgba(46,56,41,.12)}
+.qty output{min-width:18px;text-align:center;font-weight:600;font-size:14px}
+.cart-empty{margin:0;font-size:14px;opacity:.7;line-height:1.5}
+#addMore{gap:8px}
+.toast.act.show{pointer-events:auto}
+body.hide-fab .toast{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translate(-50%,-16px)}
+body.hide-fab .toast.show{transform:translate(-50%,0)}
+.toast.act{display:flex;align-items:center;gap:14px;padding:9px 9px 9px 18px;text-align:left}
+.toast.act button{border:0;border-radius:12px;background:var(--cream);color:var(--olive);font:600 14px Inter,system-ui,sans-serif;padding:9px 14px;flex:none}
+.add.added{animation:cartBump .6s var(--spring)}
+
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .9s var(--ease),transform .9s var(--spring)}
+.rv.on{opacity:1;transform:none}
+.rv.on.d1{transition-delay:.08s}.rv.on.d2{transition-delay:.16s}.rv.on.d3{transition-delay:.24s}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .rv{opacity:1;transform:none}
+}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91A9.88 9.88 0 0 0 12.04 2Zm0 18.15h-.01a8.23 8.23 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.17.24-.64.8-.78.97-.14.17-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48a.92.92 0 0 0-.66.31c-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.24 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.1-.22-.16-.47-.28Z"/></symbol>
+  <symbol id="i-tg" viewBox="0 0 24 24"><path fill="currentColor" d="M21.43 3.18 2.98 10.3c-1.26.5-1.25 1.2-.23 1.52l4.74 1.48 1.83 5.62c.22.62.11.86.76.86.5 0 .72-.23 1-.5l2.29-2.23 4.77 3.52c.88.49 1.51.24 1.73-.81l3.13-14.77c.32-1.29-.49-1.87-1.57-1.81ZM8.7 13.02l9.18-5.79c.46-.28.88-.13.53.18l-7.86 7.09-.31 3.31-1.54-4.79Z"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M5 8h14l-1 12H6Z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M9 10V7a3 3 0 0 1 6 0v3"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M12 20s-7.2-4.4-8.9-8.8C1.9 8 3.8 4.8 7 4.8c2 0 3.6 1.2 5 3 1.4-1.8 3-3 5-3 3.2 0 5.1 3.2 3.9 6.4C19.2 15.6 12 20 12 20Z"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-gem" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M12 3c2 3 5 4 8 4-1 6-4 10-8 14-4-4-7-8-8-14 3 0 6-1 8-4Z"/><circle cx="12" cy="11" r="2.2" fill="currentColor"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M4 5h16v11H9l-5 4Z"/><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M8 10.5h.01M12 10.5h.01M16 10.5h.01"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M4 12 20 4l-5 16-3-7Z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l1.8 5.4L19 9l-5.2 1.6L12 16l-1.8-5.4L5 9l5.2-1.6Zm7 11 .9 2.6 2.6.9-2.6.9L19 20l-.9-2.6-2.6-.9 2.6-.9ZM5 14l.7 2 2 .7-2 .7L5 19.4l-.7-2-2-.7 2-.7Z"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 7 4 12l5 5M4 12h11a5 5 0 0 1 0 10h-2"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+  <symbol id="i-ar" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M12 7l5 3v5l-5 3-5-3v-5Zm0 0v11M7 10l5 3 5-3"/></symbol>
+  <symbol id="i-flower" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M12 13c-3-5-1-9 0-10 1 1 3 5 0 10Zm0 0c4-3 8-2 9-1-1 1-5 3-9 1Zm0 0c-4-3-8-2-9-1 1 1 5 3 9 1Zm0 0v8"/></symbol>
+  <!-- значки цветов для 3D-лотка -->
+  <symbol id="f-rose" viewBox="0 0 48 48"><circle cx="24" cy="22" r="13" fill="currentColor" opacity=".35"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M24 14c5 0 8 3 8 7s-4 7-8 7-7-3-7-6 3-5 6-5 4 2 4 4-2 3-3 3M17 18c-2 2-3 4-3 6m20-6c2 2 3 4 3 6M24 35v9"/></symbol>
+  <symbol id="f-peony" viewBox="0 0 48 48"><circle cx="24" cy="21" r="15" fill="currentColor" opacity=".3"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 22c0-6 5-11 12-11s12 5 12 11M15 24c2 4 5 6 9 6s7-2 9-6M19 18c1-2 3-3 5-3s4 1 5 3M24 36v8"/></symbol>
+  <symbol id="f-tulip" viewBox="0 0 48 48"><path fill="currentColor" opacity=".35" d="M15 10c3 4 6 4 9 0 3 4 6 4 9 0 1 10-2 18-9 18s-10-8-9-18Z"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M15 10c3 4 6 4 9 0 3 4 6 4 9 0 1 10-2 18-9 18s-10-8-9-18ZM24 28v16M24 38c-4-1-6-4-7-7"/></symbol>
+  <symbol id="f-euc" viewBox="0 0 48 48"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M24 44V6"/><g fill="currentColor" opacity=".55"><circle cx="18" cy="12" r="5"/><circle cx="30" cy="18" r="5"/><circle cx="18" cy="24" r="5"/><circle cx="30" cy="30" r="5"/><circle cx="19" cy="36" r="4"/></g></symbol>
+  <symbol id="f-gyps" viewBox="0 0 48 48"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M24 44V22m0 0-8-8m8 8 8-9m-8 9v-12"/><g fill="currentColor"><circle cx="16" cy="13" r="3"/><circle cx="12" cy="17" r="2.4"/><circle cx="19" cy="9" r="2.2"/><circle cx="32" cy="12" r="3"/><circle cx="36" cy="16" r="2.4"/><circle cx="29" cy="8" r="2.2"/><circle cx="24" cy="9" r="2.8"/><circle cx="26" cy="5" r="2"/></g></symbol>
+  <symbol id="f-hydr" viewBox="0 0 48 48"><g fill="currentColor" opacity=".45"><circle cx="18" cy="16" r="6"/><circle cx="30" cy="15" r="6"/><circle cx="24" cy="24" r="7"/><circle cx="15" cy="26" r="5"/><circle cx="33" cy="26" r="5"/></g><g fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 13l1 3-3 1M30 12l1 3-3 1M24 21l1 3-3 1"/><path stroke-linecap="round" d="M24 31v13M24 38c4-1 7-3 8-6"/></g></symbol>
+</svg>
+
+<header class="topbar">
+  <div class="wrap glass">
+    <a class="logo" href="#home" aria-label="Дом Пиона, главная" style="margin-right:auto"><img src="icons/icon-192.png" alt="" width="32" height="32"><b>Дом Пиона</b></a>
+    <a class="points-pill" href="#cabinet" aria-label="Мои бонусные баллы"><svg aria-hidden="true"><use href="#i-gem"/></svg><span id="pillPts">0</span></a>
+    <button type="button" class="cart-btn" id="cartBtn" aria-label="Корзина"><svg aria-hidden="true"><use href="#i-bag"/></svg><i id="cartCount" hidden>0</i></button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ ГЛАВНАЯ ============ -->
+<section class="view" id="v-home" data-view="home" aria-label="Главная">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-photo" id="heroPhoto">
+        <img src="https://images.unsplash.com/photo-1782038522861-22e8c23c96e5?auto=format&fit=crop&w=720&q=70" srcset="https://images.unsplash.com/photo-1782038522861-22e8c23c96e5?auto=format&fit=crop&w=720&q=70 720w, https://images.unsplash.com/photo-1782038522861-22e8c23c96e5?auto=format&fit=crop&w=1200&q=70 1200w" sizes="(min-width:900px) 50vw, 100vw" alt="Пышный букет из розовых и белых роз и пионов" width="720" height="1080" fetchpriority="high">
+        <div class="float-chip glass c1"><i><svg aria-hidden="true"><use href="#i-flower"/></svg></i>Собираем вручную сегодня</div>
+        <div class="float-chip glass c2"><i><svg aria-hidden="true"><use href="#i-pin"/></svg></i>Доставка за 2 часа</div>
+        <div id="petals" aria-hidden="true"></div>
+      </div>
+      <div class="hero-text">
+        <h1><span class="line"><span>Цветы, которые</span></span><span class="line"><span><em>говорят за вас</em></span></span></h1>
+        <p class="lead fade">Авторские букеты из сезонных цветов. Соберите свой в 3D, примерьте на столе через камеру или доверьтесь ИИ-флористу.</p>
+        <div class="hero-cta fade">
+          <a class="btn btn-dark" href="#quiz">Подобрать букет за 30 секунд</a>
+          <a class="btn btn-glass" href="#build">Собрать в 3D</a>
+        </div>
+        <div id="careBanner"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="perks">
+      <div class="perk glass rv">
+        <svg class="icon ic-bloom" viewBox="0 0 64 64" aria-hidden="true"><path class="draw" pathLength="1" d="M32 38v20"/><g class="leaf"><path class="draw" pathLength="1" d="M32 50c-6 0-11-3-12-8 6 0 10 3 12 8Z"/></g><g class="petals"><g class="pin"><path class="fill" d="M32 30c-4-6-4-12 0-16 4 4 4 10 0 16Z"/><path d="M32 30c-4-6-4-12 0-16 4 4 4 10 0 16ZM32 30c6-3 11-3 15 1-4 4-10 4-15-1ZM32 30c-6-3-11-3-15 1 4 4 10 4 15-1ZM32 30c3 5 3 10 0 13-3-3-3-8 0-13Z"/><circle cx="32" cy="30" r="2.4"/></g></g></svg>
+        <h3>Свежие каждое утро</h3><p>Стоят минимум неделю</p>
+      </div>
+      <div class="perk glass rv d1">
+        <svg class="icon ic-van" viewBox="0 0 64 64" aria-hidden="true"><path class="speed" d="M2 28h10M4 36h8M6 44h6"/><g class="body"><path class="draw" pathLength="1" d="M16 22h26v22H16zM42 30h9l7 7v7H42"/><path class="draw" pathLength="1" d="M24 33c0-3 3-5 5-3 2-2 5 0 5 3 0 3-5 6-5 6s-5-3-5-6Z"/></g><circle class="wheel" cx="24" cy="46" r="4.5"/><path class="wheel" d="M24 42v8M20 46h8" stroke-width="1.2"/><circle class="wheel" cx="50" cy="46" r="4.5"/><path class="wheel" d="M50 42v8M46 46h8" stroke-width="1.2"/></svg>
+        <h3>Доставка за 2 часа</h3><p>В воде и коробке</p>
+      </div>
+      <div class="perk glass rv d2">
+        <svg class="icon ic-cube" viewBox="0 0 64 64" aria-hidden="true"><g class="face"><path class="draw" pathLength="1" d="M32 10 52 21v22L32 54 12 43V21Z"/><path class="draw" pathLength="1" d="M12 21l20 11 20-11M32 32v22"/></g><circle class="fill" cx="32" cy="22" r="4"/></svg>
+        <h3>Примерка в комнате</h3><p>AR через камеру</p>
+      </div>
+      <div class="perk glass rv d3">
+        <svg class="icon ic-spark" viewBox="0 0 64 64" aria-hidden="true"><path class="draw" pathLength="1" d="M10 14h44v30H28l-10 8v-8h-8Z"/><path class="star fill" d="M32 19l2 5 5 2-5 2-2 5-2-5-5-2 5-2Z"/><path class="star fill" d="M44 22l1 3 3 1-3 1-1 3-1-3-3-1 3-1Z"/><path class="star fill" d="M21 30l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z"/></svg>
+        <h3>ИИ-флорист</h3><p>Подбор по смыслу и поводу</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="wrap">
+      <div class="sec-head row-head rv"><h2>Хиты недели</h2><a href="#catalog" class="btn btn-glass btn-sm">Все букеты</a></div>
+      <div class="rail" id="hits"></div>
+    </div>
+  </div>
+
+  <div class="sec" id="reviewsSec" hidden>
+    <div class="wrap">
+      <div class="sec-head row-head"><h2>Отзывы</h2><span class="rev-avg" id="revAvg"></span></div>
+      <p class="muted" style="margin:-4px 0 12px;font-size:14px">Только от покупателей, чей заказ мы доставили</p>
+      <div class="rail rev-rail" id="reviews"></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="promo rv">
+      <h3>Клуб Дома Пиона</h3>
+      <p>Баллы с каждого заказа, кэшбэк до 10% и подарки за друзей.</p>
+      <ul>
+        <li><b>+300</b>баллов за вступление</li>
+        <li><b>до 10%</b>кэшбэк баллами</li>
+        <li><b>+500</b>вам и другу за приглашение</li>
+      </ul>
+      <a href="#cabinet" class="btn btn-dark block">Вступить и получить 300 баллов</a>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="wrap">
+      <div class="sec-head rv"><h2>Как заказать</h2></div>
+      <ol class="steps">
+        <li class="glass rv"><h3>Выберите или соберите</h3><p>Каталог, 3D-конструктор или ИИ-подбор</p></li>
+        <li class="glass rv d1"><h3>Отправьте заявку</h3><p>Она откроется в WhatsApp или Telegram</p></li>
+        <li class="glass rv d2"><h3>Утвердите фото</h3><p>Пришлём готовый букет до отправки</p></li>
+        <li class="glass rv d3"><h3>Получите цветы</h3><p>Курьер вручит лично и сообщит вам</p></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="strip-wrap" aria-label="Наши работы"><div class="strip" id="strip"></div></div>
+
+  <div class="sec">
+    <div class="wrap">
+      <div class="sec-head rv"><h2>Контакты</h2></div>
+      <div class="contacts">
+        <a class="c-row glass rv js-wa" href="#" target="_blank" rel="noopener"><span class="ci" style="background:var(--wa)"><svg aria-hidden="true"><use href="#i-wa"/></svg></span><span>WhatsApp<small class="js-phone"></small></span></a>
+        <a class="c-row glass rv d1 js-tg" href="#" target="_blank" rel="noopener"><span class="ci" style="background:var(--tg)"><svg aria-hidden="true"><use href="#i-tg"/></svg></span><span>Telegram<small class="js-tgname"></small></span></a>
+        <div class="c-row glass rv d2"><span class="ci" style="background:var(--sage-deep)"><svg aria-hidden="true"><use href="#i-pin"/></svg></span><span class="js-address"></span></div>
+      </div>
+    </div>
+  </div>
+  <footer class="footer">© <span id="year"></span> Дом Пиона. Фото: Unsplash. 3D-сканы цветов: Emm, seirogan, Lassi Kaukonen, Akiko Nakamura (CC BY 4.0, Sketchfab / Objaverse), ваза: Poly Haven (CC0)</footer>
+</section>
+
+<!-- ============ КАТАЛОГ ============ -->
+<section class="view" id="v-catalog" data-view="catalog" aria-label="Каталог">
+  <div class="wrap" style="padding:14px 0 30px">
+    <h2>Букеты</h2>
+    <p class="muted" style="margin-top:6px">Плюс добавляет букет в заказ, «3D» открывает его в конструкторе и комнате</p>
+    <div class="chips" role="group" aria-label="Фильтр">
+      <button class="chip" data-f="all" aria-pressed="true">Все</button>
+      <button class="chip" data-f="cheap" aria-pressed="false">До 5 000 ₽</button>
+      <button class="chip" data-f="roses" aria-pressed="false">Розы</button>
+      <button class="chip" data-f="peony" aria-pressed="false">Пионы</button>
+      <button class="chip" data-f="season" aria-pressed="false">Сезонные</button>
+      <button class="chip" data-f="vase" aria-pressed="false">В вазе</button>
+    </div>
+    <div class="fav-bar glass" id="favBar" hidden><span><svg aria-hidden="true"><use href="#i-heart"/></svg><b id="favCount">0</b> в избранном</span><button class="btn btn-dark btn-sm" id="hintOpen" type="button">Намекнуть</button></div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<!-- ============ 3D-КОНСТРУКТОР ============ -->
+<section class="view" id="v-build" data-view="build" aria-label="3D-конструктор букета">
+  <div class="wrap" style="padding:14px 0 20px">
+    <h2 style="margin-bottom:12px">Соберите букет в 3D</h2>
+    <p class="muted build-intro" style="margin:6px 0 16px">Перетащите цветы в вазу или нажмите на них. Вращайте букет пальцем.</p>
+    <div class="stage" id="stage">
+      <div class="stage-load" id="stageLoad"><div><i></i>Готовим мастерскую</div></div>
+      <div class="stage-ui">
+        <div class="harmony glass" id="harmony">
+          <div class="ring"><svg viewBox="0 0 44 44"><circle class="bg" cx="22" cy="22" r="18"/><circle class="fg" id="hRing" cx="22" cy="22" r="18"/></svg><b id="hScore">0</b></div>
+          <p id="hText"><b>Гармония букета</b>Добавьте первые цветы</p>
+        </div>
+        <div class="stage-tools">
+          <button class="icon-btn" id="bUndo" aria-label="Убрать последний цветок"><svg aria-hidden="true"><use href="#i-undo"/></svg></button>
+          <button class="icon-btn" id="bClear" aria-label="Очистить букет"><svg aria-hidden="true"><use href="#i-trash"/></svg></button>
+        </div>
+      </div>
+      <div class="stage-hint glass" id="stageHint">Перетащите цветок сюда</div>
+      <button class="btn btn-dark ar-btn" id="bAR"><svg aria-hidden="true"><use href="#i-ar"/></svg>В комнате</button>
+    </div>
+
+    <div class="tray" id="tray" aria-label="Цветы"></div>
+    <p class="tray-hint">Нажмите — добавить. Потяните вверх к вазе — поставить в нужное место. Листайте ленту вбок.</p>
+
+    <div class="b-block">
+      <h3>Оттенок <small id="colorNote">для всех цветов, кроме зелени</small></h3>
+      <div class="swatches" id="palette"></div>
+    </div>
+    <div class="b-block">
+      <h3>Основа</h3>
+      <div class="seg glass" id="bases"></div>
+    </div>
+    <div class="b-block">
+      <h3>Состав <small id="stemCount">0 стеблей</small></h3>
+      <div class="compo" id="compo"></div>
+    </div>
+    <div class="dock glass" id="dock">
+      <div><small id="dockNote">Цена на ленте</small><b id="bTotal">0 ₽</b></div>
+      <button class="btn btn-dark" id="bOrder">Заказать</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ КВИЗ ============ -->
+<section class="view" id="v-quiz" data-view="quiz" aria-label="Подбор букета">
+  <div class="wrap quiz" id="quiz"></div>
+</section>
+
+<!-- ============ КАБИНЕТ ============ -->
+<section class="view" id="v-cabinet" data-view="cabinet" aria-label="Личный кабинет">
+  <div class="wrap" style="padding:14px 0 30px" id="cabinet"></div>
+</section>
+</main>
+
+<nav class="tabbar glass" aria-label="Разделы">
+  <a class="tab" href="#home" data-tab="home"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20h-5v-6H9v6H4Z"/></svg>Главная</a>
+  <a class="tab" href="#catalog" data-tab="catalog"><svg viewBox="0 0 24 24"><path d="M12 13c-3-5-1-9 0-10 1 1 3 5 0 10Zm0 0c4-3 8-2 9-1-1 1-5 3-9 1Zm0 0c-4-3-8-2-9-1 1 1 5 3 9 1Zm0 0v8"/></svg>Букеты</a>
+  <a class="tab" href="#build" data-tab="build"><svg viewBox="0 0 24 24"><path d="M12 3 20 7.5v9L12 21l-8-4.5v-9Zm0 0v18M4 7.5l8 4.5 8-4.5"/></svg>3D</a>
+  <a class="tab" href="#quiz" data-tab="quiz"><svg viewBox="0 0 24 24"><path d="M12 3l2.3 4.8 5.2.7-3.8 3.6.9 5.2L12 14.8l-4.6 2.5.9-5.2L4.5 8.5l5.2-.7Z"/></svg>Подбор</a>
+  <a class="tab" href="#cabinet" data-tab="cabinet"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Кабинет</a>
+</nav>
+
+<button class="chat-fab" id="chatFab" aria-label="Открыть чат с ИИ-флористом"><svg aria-hidden="true"><use href="#i-chat"/></svg><span class="dotn" id="chatDot"></span></button>
+
+<div class="sheet-bg" id="sheetBg"></div>
+
+<!-- заказ -->
+<div class="sheet" id="orderSheet" role="dialog" aria-modal="true" aria-labelledby="orderTitle">
+  <div class="sheet-h"><h3 id="orderTitle">Оформление заказа</h3><button class="sheet-x" data-close aria-label="Закрыть">×</button></div>
+  <div class="sheet-b">
+    <form id="orderForm" novalidate>
+      <div class="fields">
+        <div class="cart" id="cartList"></div>
+        <button type="button" class="btn btn-line block" id="addMore"><svg aria-hidden="true" style="width:18px;height:18px"><use href="#i-plus"/></svg>Добавить ещё букет</button>
+        <div class="two">
+          <div class="field"><label for="o-name">Ваше имя</label><input id="o-name" name="name" autocomplete="name" placeholder="Анна"><span class="err">Укажите имя</span></div>
+          <div class="field"><label for="o-phone">Телефон</label><input id="o-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7"><span class="err">Нужно 10+ цифр</span></div>
+        </div>
+        <div class="seg glass" role="radiogroup" aria-label="Способ получения">
+          <input type="radio" name="ship" id="o-del" value="delivery" checked><label for="o-del">Доставка</label>
+          <input type="radio" name="ship" id="o-pick" value="pickup"><label for="o-pick">Самовывоз</label>
+        </div>
+        <div class="field" id="o-addr-f"><label for="o-addr">Адрес</label><input id="o-addr" name="address" autocomplete="street-address" placeholder="Улица, дом, квартира"></div>
+        <div class="two">
+          <div class="field"><label for="o-date">Дата</label><input id="o-date" name="date" type="date"></div>
+          <div class="field"><label for="o-time">Время</label><select id="o-time" name="time"><option value="">Скорее</option><option>8–11</option><option>11–14</option><option>14–17</option><option>17–20</option><option>20–22</option></select></div>
+        </div>
+        <div class="field">
+          <div class="lbl-row"><label for="o-note">Текст открытки</label><button type="button" class="ai-link" id="openCard"><svg aria-hidden="true"><use href="#i-spark"/></svg>Написать с ИИ</button></div>
+          <textarea id="o-note" name="note" placeholder="С днём рождения, мама!"></textarea>
+        </div>
+        <div class="pts-box" id="ptsBox"></div>
+      </div>
+    </form>
+  </div>
+  <div class="sheet-f">
+    <div class="sum" id="orderSum"></div>
+    <div class="btn-row">
+      <button class="btn btn-wa" data-send="wa"><svg class="ic-msg" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</button>
+      <button class="btn btn-tg" data-send="tg"><svg class="ic-msg" aria-hidden="true"><use href="#i-tg"/></svg>Telegram</button>
+    </div>
+    <p class="hint">Для Telegram заявка скопируется: вставьте её в открывшийся чат.</p>
+  </div>
+</div>
+
+<!-- генератор открыток -->
+<div class="sheet" id="cardSheet" role="dialog" aria-modal="true" aria-labelledby="cardTitle">
+  <div class="sheet-h"><h3 id="cardTitle">Текст для открытки</h3><button class="sheet-x" data-close aria-label="Закрыть">×</button></div>
+  <div class="sheet-b">
+    <div class="fields">
+      <div class="field"><label>Кому</label><div class="pick" id="cg-who"></div></div>
+      <div class="field"><label for="cg-occ">Повод</label><select id="cg-occ"></select></div>
+      <div class="field"><label>Какой человек получатель</label><div class="pick" id="cg-char"></div></div>
+      <div class="field"><label>Настроение</label><div class="seg glass" id="cg-tone"></div></div>
+      <div class="two">
+        <div class="field"><label for="cg-name">Имя получателя</label><input id="cg-name" placeholder="Необязательно"></div>
+        <div class="field"><label for="cg-from">От кого</label><input id="cg-from" placeholder="Необязательно"></div>
+      </div>
+      <div class="field"><label for="cg-extra">Что важно упомянуть</label><input id="cg-extra" placeholder="Любит горы, недавно переехала…"></div>
+      <label class="photo-in" id="cg-photo-l"><input type="file" id="cg-photo" accept="image/*"><span id="cg-photo-t">Фото получателя или повода (необязательно), ИИ учтёт настроение</span></label>
+      <button type="button" class="btn btn-dark block" id="cg-go"><svg aria-hidden="true"><use href="#i-spark"/></svg>Придумать 3 варианта</button>
+    </div>
+    <div class="variants" id="cg-out"></div>
+  </div>
+</div>
+
+<!-- AR -->
+<div class="sheet" id="arSheet" role="dialog" aria-modal="true" aria-labelledby="arTitle">
+  <div class="sheet-h"><h3 id="arTitle">Посмотреть в комнате</h3><button class="sheet-x" data-close aria-label="Закрыть">×</button></div>
+  <div class="sheet-b">
+    <div id="arHost" style="position:relative"></div>
+    <p class="hint" id="arNote">Наведите камеру на стол или тумбочку и коснитесь поверхности. Букет появится в реальном размере.</p>
+  </div>
+</div>
+
+<!-- чат -->
+<div class="sheet" id="chatSheet" role="dialog" aria-modal="true" aria-labelledby="chatTitle">
+  <div class="sheet-h">
+    <div class="bot-h"><span class="av"><svg aria-hidden="true"><use href="#i-spark"/></svg></span><div><h3 id="chatTitle">Вера, ИИ-флорист</h3><small><i></i><span id="botMode">подбирает по поводу и смыслу</span></small></div></div>
+    <button class="sheet-x" data-close aria-label="Закрыть">×</button>
+  </div>
+  <div class="sheet-b" id="chatLog" aria-live="polite"></div>
+  <form class="sheet-f chat-in" id="chatForm" autocomplete="off">
+    <label class="sr" for="chatInput">Сообщение</label>
+    <input id="chatInput" placeholder="Букет маме парня, она строгая…" enterkeyhint="send">
+    <button aria-label="Отправить"><svg aria-hidden="true"><use href="#i-send"/></svg></button>
+  </form>
+</div>
+
+<!-- установка на iPhone -->
+<div class="sheet" id="hintSheet" role="dialog" aria-modal="true" aria-labelledby="hintTitle">
+  <div class="sheet-h"><h3 id="hintTitle">Намекнуть</h3><button class="sheet-x" data-close aria-label="Закрыть">×</button></div>
+  <div class="sheet-b" id="hintBody"></div>
+</div>
+
+<div class="sheet" id="iosSheet" role="dialog" aria-modal="true" aria-labelledby="iosTitle">
+  <div class="sheet-h"><h3 id="iosTitle">Установить приложение</h3><button class="sheet-x" data-close aria-label="Закрыть">×</button></div>
+  <div class="sheet-b">
+    <ol class="steps">
+      <li class="glass"><h3>Нажмите «Поделиться»</h3><p>Квадрат со стрелкой внизу Safari</p></li>
+      <li class="glass"><h3>«На экран Домой»</h3><p>Пролистайте меню и выберите пункт</p></li>
+      <li class="glass"><h3>Нажмите «Добавить»</h3><p>Иконка появится рядом с приложениями</p></li>
+    </ol>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+<script type="module">
+/* 3D-конструктор букета «Дом Пиона».
+   Цветы — фотограмметрические 3D-сканы настоящих роз, пионов, тюльпанов и гортензии
+   (собраны из сотен фотографий живых цветов), ваза — фотоскан керамики Poly Haven.
+   Пока сканы загружаются (или если нет сети), показываются лёгкие процедурные цветы.
+   Единицы — метры, поэтому в AR букет стоит на столе в реальном размере. */
+window.createBuilder3D = async function (el, opts = {}) {
+  const THREE = await import("three");
+  const { OrbitControls } = await import("three/addons/controls/OrbitControls.js");
+  const { RoomEnvironment } = await import("three/addons/environments/RoomEnvironment.js");
+  const { mergeGeometries } = await import("three/addons/utils/BufferGeometryUtils.js");
+  const { GLTFLoader } = await import("three/addons/loaders/GLTFLoader.js");
+  /* упрощение сканов прямо в браузере: в 4–5 раз меньше треугольников без видимой разницы */
+  let simplifier = null;
+  const simpReady = import("https://cdn.jsdelivr.net/npm/meshoptimizer@0.21.0/meshopt_simplifier.module.js")
+    .then(async m => { await m.MeshoptSimplifier.ready; simplifier = m.MeshoptSimplifier; }).catch(() => {});
+
+  const probe = document.createElement("canvas");
+  if (!(probe.getContext("webgl2") || probe.getContext("webgl"))) throw new Error("WebGL недоступен");
+
+  /* ---------- реальные 3D-сканы (CC BY 4.0 / CC0), см. ИНСТРУКЦИЯ.txt ---------- */
+  const HF = "https://huggingface.co/datasets/allenai/objaverse/resolve/main/glbs/";
+  const SCANS = {
+    rose:  { url: HF + "000-128/3a56a21aae594934aae7f9daa1bfd5b4.glb", width: 0.085, tris: 22000 },              // «Pink rose», Emm
+    peony: { url: HF + "000-000/02ef40153ca24f309d1f67fe42066cb6.glb", width: 0.12, tris: 22000 },               // «芍薬», seirogan
+    tulip: { url: HF + "000-060/651e57a3728b4208b77d6d765260d018.glb", width: 0.05, tris: 12000 },               // «Red Tulip», Lassi Kaukonen
+    hydr:  { url: HF + "000-103/fed5612d78e64f43a74c9b8330d894b8.glb", width: 0.15, crop: 0.42, tris: 20000 }   // «Hydrangea pink», Akiko Nakamura
+  };
+  const PH = "https://dl.polyhaven.org/file/ph-assets/Models/";
+  const CERAMIC = {
+    url: PH + "gltf/1k/ceramic_vase_02/ceramic_vase_02_1k.gltf",
+    files: {
+      "ceramic_vase_02.bin": PH + "gltf/8k/ceramic_vase_02/ceramic_vase_02.bin",
+      "textures/ceramic_vase_02_diff_1k.jpg": PH + "jpg/1k/ceramic_vase_02/ceramic_vase_02_diff_1k.jpg",
+      "textures/ceramic_vase_02_nor_gl_1k.jpg": PH + "jpg/1k/ceramic_vase_02/ceramic_vase_02_nor_gl_1k.jpg",
+      "textures/ceramic_vase_02_rough_1k.jpg": PH + "jpg/1k/ceramic_vase_02/ceramic_vase_02_rough_1k.jpg"
+    }
+  };
+
+  const W = () => Math.max(1, el.clientWidth), H = () => Math.max(1, el.clientHeight);
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setSize(W(), H());
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.95;
+  el.prepend(renderer.domElement);
+  renderer.domElement.setAttribute("aria-label", "3D-сцена букета, вращайте пальцем");
+
+  const scene = new THREE.Scene();
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+
+  const camera = new THREE.PerspectiveCamera(32, W() / H(), 0.01, 20);
+  camera.position.set(0, 0.44, 0.78);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.target.set(0, 0.22, 0);
+  controls.enableDamping = true; controls.dampingFactor = 0.08;
+  controls.enablePan = false; controls.minDistance = 0.35; controls.maxDistance = 1.4;
+  controls.minPolarAngle = 0.35; controls.maxPolarAngle = 1.5;
+  controls.autoRotate = true; controls.autoRotateSpeed = 0.7;
+  let idleT; controls.addEventListener("start", () => { controls.autoRotate = false; clearTimeout(idleT); });
+  controls.addEventListener("end", () => { idleT = setTimeout(() => controls.autoRotate = true, 4000); });
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xb9c7b0, 0.4));
+  const sun = new THREE.DirectionalLight(0xfff1e2, 1.3); sun.position.set(0.6, 1.2, 0.8); scene.add(sun);
+
+  /* мягкая тень под букетом */
+  const sc = document.createElement("canvas"); sc.width = sc.height = 128;
+  const g2 = sc.getContext("2d"); const gr = g2.createRadialGradient(64, 64, 4, 64, 64, 64);
+  gr.addColorStop(0, "rgba(46,56,41,.35)"); gr.addColorStop(1, "rgba(46,56,41,0)"); g2.fillStyle = gr; g2.fillRect(0, 0, 128, 128);
+  const shadow = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.5), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), transparent: true, depthWrite: false }));
+  shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.001; scene.add(shadow);
+
+  const root = new THREE.Group(); root.name = "Bouquet"; scene.add(root);
+  const baseGroup = new THREE.Group(); const flowersGroup = new THREE.Group(); root.add(baseGroup, flowersGroup);
+
+  /* материалы */
+  const matCache = new Map();
+  const mat = (color, o = {}) => {
+    const key = color + JSON.stringify(o);
+    if (!matCache.has(key)) matCache.set(key, new THREE.MeshStandardMaterial({ color: new THREE.Color(color), roughness: 0.65, metalness: 0, envMapIntensity: 0.55, side: THREE.DoubleSide, ...o }));
+    return matCache.get(key);
+  };
+  /* лист эвкалипта: восковой налёт, светлая середина и тонкая жилка */
+  const eucTex = (() => {
+    const c = document.createElement("canvas"); c.width = c.height = 128; const x = c.getContext("2d");
+    const g = x.createRadialGradient(64, 64, 6, 64, 64, 64); g.addColorStop(0, "#c3d2c8"); g.addColorStop(0.6, "#9fb4a8"); g.addColorStop(1, "#7f978b");
+    x.fillStyle = g; x.fillRect(0, 0, 128, 128);
+    for (let i = 0; i < 900; i++) { x.fillStyle = `rgba(255,255,255,${Math.random() * 0.08})`; x.fillRect(Math.random() * 128, Math.random() * 128, 2, 2); }
+    x.strokeStyle = "rgba(90,110,98,.45)"; x.lineWidth = 1.5; x.beginPath(); x.moveTo(64, 4); x.lineTo(64, 124); x.stroke();
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.userData.mimeType = "image/jpeg"; return t;
+  })();
+  const STEM = mat("#5F7A52", { roughness: 0.7 }), LEAF = mat("#4F6B45", { roughness: 0.6 }), GYPS = mat("#FFFFFF", { roughness: 0.9 });
+  const EUC = new THREE.MeshStandardMaterial({ map: eucTex, roughness: 0.75, metalness: 0, envMapIntensity: 0.6, side: THREE.DoubleSide });
+
+  /* ---------- процедурные цветы: мгновенный показ и запасной вариант ---------- */
+  function petal(w, h, cup, curl, shade) {
+    const g = new THREE.PlaneGeometry(1, 1, 8, 8); const p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      let x = p.getX(i), y = p.getY(i) + 0.5;
+      const top = y > 0.68 ? Math.sqrt(Math.max(0, 1 - Math.pow((y - 0.68) / 0.32, 2))) : 1;
+      x *= Math.max(0.04, Math.sin(Math.PI * (0.1 + 0.45 * y)) * top);
+      p.setXYZ(i, x * w, y * h, -cup * Math.pow(x * 2, 2) * w + curl * y * y * h);
+    }
+    g.computeVertexNormals();
+    g.setAttribute("color", new THREE.BufferAttribute(new Float32Array(p.count * 3).fill(shade), 3));
+    return g;
+  }
+  function placed(g, ang, r, tilt, y = 0, spin = 0) {
+    return g.applyMatrix4(new THREE.Matrix4().makeRotationY(-ang).multiply(new THREE.Matrix4().makeTranslation(0, y, r)).multiply(new THREE.Matrix4().makeRotationX(tilt)).multiply(new THREE.Matrix4().makeRotationZ(spin)));
+  }
+  function coloredSphere(r, sx, sy, sz, y, shade) {
+    const g = new THREE.SphereGeometry(r, 10, 8); g.scale(sx, sy, sz); g.translate(0, y, 0);
+    g.setAttribute("color", new THREE.BufferAttribute(new Float32Array(g.attributes.position.count * 3).fill(shade), 3));
+    return g;
+  }
+  const proc = {};
+  const PROC = {
+    rose: () => proc.rose ||= mergeGeometries([coloredSphere(0.007, 1, 1.7, 1, 0.012, 0.62), ...Array.from({ length: 24 }, (_, i) => { const t = i / 23; return placed(petal(0.014 + t * 0.014, 0.022 + t * 0.006, 0.75 - t * 0.25, t * t * 0.35, 0.7 + t * 0.3), i * 2.39996, 0.002 + t * 0.013, 0.04 + Math.pow(t, 1.7) * 0.95, 0, (Math.random() - 0.5) * 0.15); })]),
+    peony: () => proc.peony ||= mergeGeometries([coloredSphere(0.013, 1, 0.9, 1, 0.014, 0.78), ...Array.from({ length: 32 }, (_, i) => { const t = i / 31; return placed(petal(0.022 + t * 0.014, 0.021 + t * 0.012, 1.2, -0.05 + t * 0.1, 0.74 + t * 0.26), i * 2.39996 + Math.random() * 0.25, 0.003 + t * 0.017, 0.22 + Math.pow(t, 1.1) * 0.8, 0.002, (Math.random() - 0.5) * 0.3); })]),
+    tulip: () => proc.tulip ||= mergeGeometries(Array.from({ length: 6 }, (_, i) => placed(petal(0.024, 0.048, 0.65, -0.03, i < 3 ? 0.9 : 1), i * Math.PI / 3 + (i >= 3 ? Math.PI / 6 : 0), i < 3 ? 0.006 : 0.009, i < 3 ? 0.08 : 0.2))),
+    hydr: () => proc.hydr ||= mergeGeometries(Array.from({ length: 60 }, () => { const a = Math.random() * 6.283, b = Math.random() * 1.3, g = coloredSphere(0.009, 1, 0.6, 1, 0, 0.8 + Math.random() * 0.2); g.translate(Math.sin(b) * Math.cos(a) * 0.05, 0.035 + Math.cos(b) * 0.04, Math.sin(b) * Math.sin(a) * 0.05); return g; })),
+    gyps: () => proc.gyps ||= (() => {
+      const parts = [];
+      for (let i = 0; i < 46; i++) { const a = Math.random() * Math.PI * 2, r = Math.sqrt(Math.random()) * 0.04, y = Math.random() * 0.03; const g = new THREE.SphereGeometry(0.0035 + Math.random() * 0.0015, 6, 4); g.translate(Math.cos(a) * r, y, Math.sin(a) * r); g.deleteAttribute("uv"); parts.push(g); }
+      for (let i = 0; i < 6; i++) { const a = i * 1.05; const tw = new THREE.CylinderGeometry(0.0007, 0.0009, 0.04, 4); tw.rotateZ(0.6); tw.rotateY(a); tw.translate(Math.cos(a) * 0.012, -0.012, Math.sin(a) * 0.012); tw.deleteAttribute("uv"); parts.push(tw); }
+      return mergeGeometries(parts);
+    })(),
+    euc: () => proc.euc ||= (() => {
+      const parts = []; const len = 0.17;
+      const st = new THREE.CylinderGeometry(0.0014, 0.0022, len, 5); st.translate(0, len / 2, 0); parts.push(st);
+      for (let i = 0; i < 9; i++) {
+        const y = 0.025 + i * 0.017, side = i % 2 ? 1 : -1, r = 0.016 - i * 0.0007;
+        const leaf = new THREE.CircleGeometry(r, 16); const lp = leaf.attributes.position;
+        for (let k = 0; k < lp.count; k++) lp.setZ(k, -Math.pow(Math.hypot(lp.getX(k), lp.getY(k)) / r, 2) * r * 0.25);
+        leaf.computeVertexNormals(); leaf.rotateY(side * 0.5 + Math.PI / 2); leaf.rotateZ(side * 0.4); leaf.translate(side * r * 0.9, y, 0);
+        parts.push(leaf);
+      }
+      return mergeGeometries(parts.map(p => { const q = p.index ? p.toNonIndexed() : p; if (!q.attributes.uv) q.setAttribute("uv", new THREE.BufferAttribute(new Float32Array(q.attributes.position.count * 2), 2)); return q; }));
+    })()
+  };
+  const LEAF_G = (() => { const g = petal(0.018, 0.04, 0.25, 0.08, 1); g.deleteAttribute("color"); return g; })();
+
+  /* ---------- загрузка и подготовка 3D-сканов ---------- */
+  const loader = new GLTFLoader();
+  const real = {};          // готовые шаблоны: { group, height }
+  const loading = {};
+  let pending = 0;
+  const status = () => opts.onStatus && opts.onStatus(pending ? "Загружаем живые цветы…" : "");
+  /* оставляем только нужные треугольники и вершины — модель легче для телефона и AR */
+  function compact(g, keep) {
+    const map = new Map(), out = new THREE.BufferGeometry(), idx = new Uint32Array(keep.length);
+    keep.forEach((v, i) => { if (!map.has(v)) map.set(v, map.size); idx[i] = map.get(v); });
+    const get = ["getX", "getY", "getZ", "getW"];
+    for (const [name, attr] of Object.entries(g.attributes)) {
+      const Arr = attr.normalized ? Float32Array : attr.array.constructor, arr = new Arr(map.size * attr.itemSize);
+      map.forEach((n, o) => { for (let k = 0; k < attr.itemSize; k++) arr[n * attr.itemSize + k] = attr[get[k]](o); });
+      out.setAttribute(name, new THREE.BufferAttribute(arr, attr.itemSize, false));
+    }
+    out.setIndex(new THREE.BufferAttribute(idx, 1));
+    return out;
+  }
+  function cropAndBake(scn, crop) {
+    scn.updateMatrixWorld(true);
+    const out = new THREE.Group();
+    const parts = [];
+    scn.traverse(o => { if (o.isMesh) parts.push(o); });
+    const box = new THREE.Box3().setFromObject(scn);
+    const cut = crop ? box.max.y - (box.max.y - box.min.y) * crop : -Infinity;
+    for (const m of parts) {
+      let g = m.geometry.clone().applyMatrix4(m.matrixWorld);
+      if (!g.index) g.setIndex([...Array(g.attributes.position.count).keys()]);
+      if (crop) {
+        const pos = g.attributes.position, idx = g.index ? g.index.array : null, keep = [];
+        const n = idx ? idx.length : pos.count;
+        for (let i = 0; i < n; i += 3) {
+          const a = idx ? idx[i] : i, b = idx ? idx[i + 1] : i + 1, c = idx ? idx[i + 2] : i + 2;
+          if ((pos.getY(a) + pos.getY(b) + pos.getY(c)) / 3 > cut) keep.push(a, b, c);
+        }
+        if (!keep.length) continue;
+        g = compact(g, keep);
+      }
+      const mm = new THREE.Mesh(g, m.material); out.add(mm);
+    }
+    /* центрируем по головке и ставим основанием в 0 */
+    const b2 = new THREE.Box3().setFromObject(out), c = b2.getCenter(new THREE.Vector3());
+    out.children.forEach(m => m.geometry.translate(-c.x, -b2.min.y, -c.z));
+    return out;
+  }
+  function simplify(g, tris) {
+    if (!simplifier || !tris || g.index.count / 3 <= tris) return g;
+    const pos = new Float32Array(g.attributes.position.count * 3);
+    for (let i = 0; i < g.attributes.position.count; i++) { pos[i * 3] = g.attributes.position.getX(i); pos[i * 3 + 1] = g.attributes.position.getY(i); pos[i * 3 + 2] = g.attributes.position.getZ(i); }
+    const [out] = simplifier.simplify(new Uint32Array(g.index.array), pos, 3, tris * 3, 0.02);
+    return compact(g, Array.from(out));
+  }
+  function loadScan(type) {
+    if (real[type] || loading[type] || !SCANS[type]) return loading[type];
+    pending++; status();
+    loading[type] = Promise.all([loader.loadAsync(SCANS[type].url), simpReady]).then(([gltf]) => {
+      const grp = cropAndBake(gltf.scene, SCANS[type].crop);
+      const meshTris = SCANS[type].tris / Math.max(1, grp.children.length);
+      grp.children.forEach(m => { m.geometry = simplify(m.geometry, Math.round(meshTris)); });
+      const b = new THREE.Box3().setFromObject(grp), size = b.getSize(new THREE.Vector3());
+      const k = SCANS[type].width / Math.max(size.x, size.z);
+      grp.children.forEach(m => { m.geometry.scale(k, k, k); m.geometry.computeBoundingSphere(); m.geometry.computeBoundingBox(); });
+      grp.children.forEach(m => {
+        [].concat(m.material).forEach(q => { if (q.map) { q.map.colorSpace = THREE.SRGBColorSpace; q.map.userData.mimeType = "image/jpeg"; } q.side = THREE.DoubleSide; });
+        /* сканы с «запечённым» светом не используют нормали — убираем их, модель становится легче */
+        if ([].concat(m.material).every(q => q.isMeshBasicMaterial)) m.geometry.deleteAttribute("normal");
+      });
+      real[type] = { group: grp, height: size.y * k };
+      rebuild();
+    }).catch(() => { /* остаёмся на процедурных цветах */ }).finally(() => { pending--; status(); });
+    return loading[type];
+  }
+
+  /* перекраска фото-текстуры в выбранный оттенок: светотень и прожилки сохраняются, зелень не трогаем */
+  const recolorCache = new Map();
+  function recolorMaterial(src, hex) {
+    const key = src.uuid + hex;
+    if (recolorCache.has(key)) return recolorCache.get(key);
+    const m = src.clone();
+    if (src.map && src.map.image) {
+      const img = src.map.image, w = Math.min(1024, img.width), h = Math.round(img.height * w / img.width);
+      const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+      const cx = cv.getContext("2d"); cx.drawImage(img, 0, 0, w, h);
+      const d = cx.getImageData(0, 0, w, h), px = d.data, t = new THREE.Color(hex);
+      const tr = Math.pow(t.r, 1 / 2.2), tg = Math.pow(t.g, 1 / 2.2), tb = Math.pow(t.b, 1 / 2.2);
+      let sum = 0, cnt = 0;
+      const soft = 1 - 0.65 * (0.3 * tr + 0.59 * tg + 0.11 * tb);
+      const petal = (r, g, b) => { const mx = Math.max(r, g, b), mn = Math.min(r, g, b); const green = g > r * 1.05 && g > b; return !green && mx > 40 && (mx - mn > 25 || mx > 170); };
+      for (let i = 0; i < px.length; i += 4) if (petal(px[i], px[i + 1], px[i + 2])) { sum += 0.3 * px[i] + 0.59 * px[i + 1] + 0.11 * px[i + 2]; cnt++; }
+      const mean = cnt ? sum / cnt : 128;
+      for (let i = 0; i < px.length; i += 4) {
+        const r = px[i], g = px[i + 1], b = px[i + 2];
+        if (!petal(r, g, b)) continue;
+        const l = (0.3 * r + 0.59 * g + 0.11 * b) / mean, s0 = Math.min(1.25, Math.max(0.22, Math.pow(l, 0.85)));
+        const s = Math.min(1.15, 1 - (1 - s0) * soft); /* светлые оттенки — мягче тени, чтобы белый не уходил в серый */
+        px[i] = Math.min(255, tr * 255 * s); px[i + 1] = Math.min(255, tg * 255 * s); px[i + 2] = Math.min(255, tb * 255 * s);
+      }
+      cx.putImageData(d, 0, 0);
+      const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.flipY = src.map.flipY; tex.userData.mimeType = "image/jpeg";
+      m.map = tex;
+    }
+    recolorCache.set(key, m);
+    return m;
+  }
+  /* цвета, которые совпадают с «родным» цветом скана, оставляем как на фото */
+  const NATIVE = { rose: ["#E7A9A8"], peony: [], tulip: [], hydr: ["#C3B1D9"] };
+  function realHead(type, color) {
+    const r = real[type]; if (!r) return null;
+    const g = new THREE.Group();
+    r.group.children.forEach(m => {
+      const keep = !color || NATIVE[type].includes(color);
+      const material = Array.isArray(m.material) ? m.material.map(q => keep ? q : recolorMaterial(q, color)) : (keep ? m.material : recolorMaterial(m.material, color));
+      g.add(new THREE.Mesh(m.geometry, material));
+    });
+    return g;
+  }
+
+  /* ---------- основы: бумага, стекло, керамика (фотоскан), шляпная коробка ---------- */
+  const BASES = {
+    paper:   { mouthY: 0.07, mouthR: 0.012, bottomY: 0.005, C: new THREE.Vector3(0, 0.205, 0), R: 0.1, sy: 0.75, shadow: 1 },
+    vase:    { mouthY: 0.205, mouthR: 0.03, bottomY: 0.02, C: new THREE.Vector3(0, 0.235, 0), R: 0.095, sy: 0.75, shadow: 1 },
+    ceramic: { mouthY: 0.255, mouthR: 0.045, bottomY: 0.03, C: new THREE.Vector3(0, 0.29, 0), R: 0.11, sy: 0.7, shadow: 1.15 },
+    box:     { mouthY: 0.11, mouthR: 0.07, bottomY: 0.1, C: new THREE.Vector3(0, 0.125, 0), R: 0.085, sy: 0.35, shadow: 1.2 }
+  };
+  let baseId = "paper", ceramicModel = null, ceramicLoading = null;
+  function loadCeramic() {
+    if (ceramicModel || ceramicLoading) return ceramicLoading;
+    pending++; status();
+    const mgr = new THREE.LoadingManager(); mgr.setURLModifier(u => { for (const [k, v] of Object.entries(CERAMIC.files)) if (u.endsWith(k)) return v; return u; });
+    ceramicLoading = new GLTFLoader(mgr).loadAsync(CERAMIC.url).then(g => {
+      ceramicModel = g.scene; ceramicModel.scale.setScalar(0.85);
+      ceramicModel.traverse(o => { if (o.isMesh && o.material) { o.material.envMapIntensity = 0.9; ["map", "normalMap", "roughnessMap"].forEach(k => { if (o.material[k]) o.material[k].userData.mimeType = "image/jpeg"; }); } });
+      if (baseId === "ceramic") buildBase("ceramic");
+    }).catch(() => {}).finally(() => { pending--; status(); });
+    return ceramicLoading;
+  }
+  function glassVase(pts, h) {
+    const glass = new THREE.MeshPhysicalMaterial({ color: 0xf4fbf8, roughness: 0.03, metalness: 0, transmission: 1, thickness: 0.004, ior: 1.5, transparent: true, opacity: 1, specularIntensity: 1, envMapIntensity: 1.2, side: THREE.DoubleSide, attenuationColor: new THREE.Color(0xd8efe6), attenuationDistance: 0.4 });
+    const vase = new THREE.Mesh(new THREE.LatheGeometry(pts.map(([x, y]) => new THREE.Vector2(x, y)), 64), glass);
+    const water = new THREE.Mesh(new THREE.CylinderGeometry(0.056, 0.05, h, 48), new THREE.MeshPhysicalMaterial({ color: 0xe4f2ef, roughness: 0.02, transmission: 1, thickness: 0.05, ior: 1.33, transparent: true }));
+    water.position.y = h / 2 + 0.006;
+    return [vase, water];
+  }
+  function buildBase(id) {
+    baseGroup.clear();
+    if (id === "vase") {
+      baseGroup.add(...glassVase([[0, 0], [0.05, 0], [0.057, 0.006], [0.064, 0.05], [0.063, 0.11], [0.05, 0.17], [0.041, 0.193], [0.045, 0.203], [0.043, 0.21], [0.039, 0.205], [0.037, 0.19], [0.046, 0.17], [0.058, 0.11], [0.059, 0.05], [0.052, 0.01], [0, 0.008]], 0.1));
+    } else if (id === "ceramic") {
+      if (ceramicModel) baseGroup.add(ceramicModel);
+      else {
+        /* пока скан грузится — аккуратная керамическая заглушка той же формы */
+        const pts = [[0, 0], [0.085, 0], [0.093, 0.06], [0.09, 0.17], [0.075, 0.24], [0.064, 0.264], [0.058, 0.25], [0, 0.248]].map(([x, y]) => new THREE.Vector2(x, y));
+        baseGroup.add(new THREE.Mesh(new THREE.LatheGeometry(pts, 48), mat("#F1EDE6", { roughness: 0.45, side: THREE.FrontSide })));
+        loadCeramic();
+      }
+    } else if (id === "paper") {
+      const kraft = mat("#D9C3A1", { roughness: 0.92 }), tissue = mat("#EDD5CF", { roughness: 0.8 });
+      const outer = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.02, 0.19, 32, 3, true, -0.4, Math.PI * 1.55), kraft); outer.position.y = 0.105;
+      const inner = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.024, 0.18, 32, 3, true, Math.PI * 0.85, Math.PI * 1.35), tissue); inner.position.y = 0.115;
+      const ribbon = new THREE.Mesh(new THREE.TorusGeometry(0.05, 0.004, 8, 40), mat("#6F8466", { roughness: 0.35 })); ribbon.rotation.x = Math.PI / 2; ribbon.position.y = 0.065;
+      const bowG = new THREE.TorusGeometry(0.014, 0.004, 8, 20);
+      const b1 = new THREE.Mesh(bowG, ribbon.material); b1.position.set(0.016, 0.066, 0.052); b1.rotation.set(0.3, 0.8, 0.6);
+      const b2 = new THREE.Mesh(bowG, ribbon.material); b2.position.set(-0.014, 0.066, 0.052); b2.rotation.set(0.3, -0.6, -0.6);
+      baseGroup.add(outer, inner, ribbon, b1, b2);
+    } else {
+      const box = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.105, 0.13, 56), mat("#E9D2CC", { roughness: 0.55, side: THREE.FrontSide })); box.position.y = 0.065;
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.105, 0.003, 8, 64), mat("#C7A978", { roughness: 0.3, metalness: 0.6 })); rim.rotation.x = Math.PI / 2; rim.position.y = 0.13;
+      const moss = new THREE.Mesh(new THREE.CircleGeometry(0.102, 48), mat("#5D7350", { roughness: 1 })); moss.rotation.x = -Math.PI / 2; moss.position.y = 0.127;
+      const band = new THREE.Mesh(new THREE.CylinderGeometry(0.1065, 0.1065, 0.012, 56, 1, true), mat("#6F8466", { roughness: 0.35 })); band.position.y = 0.04;
+      baseGroup.add(box, rim, moss, band);
+    }
+    const b = BASES[id]; dome.position.copy(b.C); dome.scale.set(b.R, b.R * b.sy, b.R); shadow.scale.setScalar(b.shadow);
+    frame();
+  }
+  /* камера охватывает весь букет: от дна основы до верхушек цветов */
+  function frame() {
+    const b = BASES[baseId], top = b.C.y + b.R * b.sy + 0.07, d = Math.max(0.62, top * 2.45);
+    controls.target.set(0, top * 0.5, 0);
+    const dir = camera.position.clone().sub(controls.target).setY(0); if (dir.lengthSq() < 1e-6) dir.set(0, 0, 1); dir.normalize();
+    camera.position.set(dir.x * d * 0.92, top * 0.5 + d * 0.38, dir.z * d * 0.92);
+    controls.update();
+  }
+
+  /* невидимый купол — сюда «падают» перетащенные цветы */
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshBasicMaterial({ visible: false, side: THREE.DoubleSide }));
+  scene.add(dome);
+
+  const items = []; const UP = new THREE.Vector3(0, 1, 0);
+  const isGreen = t => t === "euc";
+  function autoPoint(kind) {
+    const b = BASES[baseId];
+    if (isGreen(kind)) {
+      const k = items.filter(i => i.type === "euc").length, a = k * 2.2 + 0.4, th = (baseId === "box" ? 1.3 : 0.95) + (k % 2) * 0.12;
+      return new THREE.Vector3(Math.sin(th) * Math.cos(a), Math.cos(th) * b.sy, Math.sin(th) * Math.sin(a)).multiplyScalar(b.R * 1.05).add(b.C);
+    }
+    const k = items.filter(i => !isGreen(i.type)).length, R = b.R * (1 + Math.max(0, k - 12) * 0.016), t = Math.min(1, Math.sqrt((k + 0.4) / 13)), th = t * 1.2, a = k * 2.39996;
+    return new THREE.Vector3(Math.sin(th) * Math.cos(a), Math.cos(th) * b.sy, Math.sin(th) * Math.sin(a)).multiplyScalar(R).add(b.C);
+  }
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  function pickPoint(cx, cy) {
+    const r = renderer.domElement.getBoundingClientRect();
+    ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera); dome.updateMatrixWorld();
+    const hit = ray.intersectObject(dome)[0]; return hit ? hit.point : null;
+  }
+  function tube(points, r) {
+    const geo = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), 14, r, 5, false);
+    const m = new THREE.Mesh(geo, STEM); m.userData.own = true; return m;
+  }
+  function makeFlower(type, color, point, seed) {
+    const rnd = (k) => { const x = Math.sin(seed * 9301 + k * 49297) * 233280; return x - Math.floor(x); };
+    const b = BASES[baseId], g = new THREE.Group();
+    const dir = point.clone().sub(b.C).normalize().lerp(UP, isGreen(type) ? 0.15 : 0.35).normalize();
+    const start = new THREE.Vector3((rnd(1) - 0.5) * b.mouthR, b.mouthY, (rnd(2) - 0.5) * b.mouthR);
+    const bottom = new THREE.Vector3(start.x * 0.4, b.bottomY, start.z * 0.4);
+    if (type === "euc") {
+      const br = new THREE.Mesh(PROC.euc(), EUC);
+      const from = start.clone().lerp(point, baseId === "paper" ? 0.35 : 0);
+      br.position.copy(from); br.quaternion.setFromUnitVectors(UP, point.clone().sub(from).normalize());
+      br.userData.size = Math.max(0.75, Math.min(1.15, point.distanceTo(from) / 0.14));
+      br.userData.head = true; br.scale.setScalar(0.001); g.add(br);
+      if (b.bottomY < b.mouthY - 0.02) g.add(tube([bottom, start, from], 0.0018));
+      return g;
+    }
+    const neck = point.clone().addScaledVector(dir, -0.006);
+    const mid = start.clone().lerp(neck, 0.55); mid.y += 0.015;
+    const pts = b.bottomY < b.mouthY - 0.02 ? [bottom, start, mid, neck] : [start, mid, neck];
+    g.add(tube(pts, type === "tulip" ? 0.0028 : 0.0024));
+    if (type !== "gyps" && baseId !== "box" && rnd(3) < 0.55) {
+      const curve = new THREE.CatmullRomCurve3(pts), p = curve.getPoint(0.72), tan = curve.getTangent(0.72);
+      const lf = new THREE.Mesh(LEAF_G, LEAF); lf.position.copy(p); lf.scale.setScalar(0.75);
+      lf.quaternion.setFromUnitVectors(UP, tan.clone().lerp(new THREE.Vector3(rnd(4) - 0.5, 0.2, rnd(5) - 0.5), 0.6).normalize());
+      g.add(lf);
+    }
+    let head = realHead(type, color);
+    let sz = 0.92 + rnd(6) * 0.16;
+    if (head) { head.position.copy(neck); }
+    else {
+      head = new THREE.Mesh(PROC[type](), type === "gyps" ? GYPS : mat(color || "#EBC4BE", { vertexColors: true }));
+      head.position.copy(point);
+      sz *= { rose: 1.3, peony: 1.25, tulip: 1.1, gyps: 1.1, hydr: 1.2 }[type] || 1;
+    }
+    head.quaternion.setFromUnitVectors(UP, dir); head.rotateY(rnd(7) * Math.PI * 2);
+    head.userData.size = sz; head.userData.head = true; head.scale.setScalar(0.001);
+    g.add(head);
+    return g;
+  }
+  const clock = new THREE.Clock();
+  let seedN = 1;
+  function add(type, color, cx, cy, silent) {
+    loadScan(type);
+    let point = cx != null ? pickPoint(cx, cy) : null;
+    if (point && type === "euc") point = point.clone().sub(BASES[baseId].C).multiplyScalar(1.12).add(BASES[baseId].C);
+    if (!point) point = autoPoint(type);
+    const seed = seedN++;
+    const obj = makeFlower(type, color, point, seed);
+    obj.userData.born = clock.getElapsedTime();
+    flowersGroup.add(obj); items.push({ type, color: color || null, obj, point: point.clone(), seed });
+    if (!silent) change();
+  }
+  function dispose(obj) { obj.traverse(o => { if (o.userData.own && o.geometry) o.geometry.dispose(); }); flowersGroup.remove(obj); }
+  function undo() { const it = items.pop(); if (it) dispose(it.obj); change(); }
+  function removeLast(type, color) { for (let i = items.length - 1; i >= 0; i--) if (items[i].type === type && (items[i].color || null) === (color || null)) { dispose(items[i].obj); items.splice(i, 1); break; } change(); }
+  let loadToken = 0;
+  function clear() { loadToken++; while (items.length) dispose(items.pop().obj); change(); }
+  /* пересборка: при смене основы — новые позиции, при загрузке сканов — те же позиции */
+  function rebuild(newPositions) {
+    const list = items.splice(0);
+    list.forEach(i => dispose(i.obj));
+    list.forEach(i => {
+      const point = newPositions ? autoPoint(i.type) : i.point;
+      const obj = makeFlower(i.type, i.color, point, i.seed);
+      obj.userData.born = clock.getElapsedTime() - (newPositions ? 0 : 0.6);
+      flowersGroup.add(obj); items.push({ ...i, obj, point: point.clone() });
+    });
+    change();
+  }
+  function setBase(id) { if (!BASES[id]) return; const changed = id !== baseId; baseId = id; buildBase(id); if (changed && items.length) rebuild(true); else change(); }
+  function load(recipe) {
+    clear(); const token = ++loadToken; baseId = recipe.base; buildBase(baseId); change();
+    const seq = []; recipe.items.forEach(([t, c, n]) => { loadScan(t); for (let i = 0; i < n; i++) seq.push([t, c]); });
+    seq.sort((a, b) => (a[0] === "euc" ? -1 : 0) - (b[0] === "euc" ? -1 : 0));
+    seq.forEach(([t, c], i) => setTimeout(() => { if (token === loadToken) add(t, c); }, 60 * i));
+  }
+  function change() { opts.onChange && opts.onChange(items.map(i => ({ type: i.type, color: i.color })), baseId); }
+
+  async function exportGLB() {
+    /* дожидаемся сканов, чтобы в комнату ушли живые цветы, а не заглушки */
+    const waits = [...new Set(items.map(i => i.type))].map(loadScan).filter(Boolean);
+    if (baseId === "ceramic") waits.push(loadCeramic());
+    await Promise.race([Promise.all(waits), new Promise(r => setTimeout(r, 20000))]);
+    const { GLTFExporter } = await import("three/addons/exporters/GLTFExporter.js");
+    flowersGroup.traverse(o => { if (o.userData.head && o.userData.size) o.scale.setScalar(o.userData.size); });
+    return new Promise((res, rej) => new GLTFExporter().parse(root, buf => res(new Blob([buf], { type: "model/gltf-binary" })), rej, { binary: true, onlyVisible: true, maxTextureSize: 1024 }));
+  }
+
+  /* цикл отрисовки: пружинное появление цветов, пауза когда раздел скрыт */
+  function spring(t) { return t >= 1.4 ? 1 : 1 - Math.exp(-6 * t) * Math.cos(11 * t); }
+  function loop() {
+    requestAnimationFrame(loop);
+    const now = clock.getElapsedTime();
+    for (const it of items) {
+      if (it.obj.userData.done) continue;
+      const age = now - it.obj.userData.born, done = age >= 1.4 || document.hidden || !el.offsetParent;
+      it.obj.children.forEach(c => { if (c.userData.head) c.scale.setScalar(Math.max(0.001, (done ? 1 : spring(age)) * (c.userData.size || 1))); });
+      if (done) it.obj.userData.done = true;
+    }
+    if (!el.offsetParent || document.hidden) return;
+    controls.update(); renderer.render(scene, camera);
+  }
+  new ResizeObserver(() => { renderer.setSize(W(), H()); camera.aspect = W() / H(); camera.updateProjectionMatrix(); }).observe(el);
+  buildBase(baseId); loop();
+  /* заранее подгружаем самые популярные сканы */
+  setTimeout(() => { loadScan("rose"); loadScan("peony"); }, 300);
+  return { add, undo, clear, removeLast, setBase, load, exportGLB };
+};
+dispatchEvent(new Event("builder3d-ready"));
+</script>
+</body>
+</html>

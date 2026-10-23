@@ -1,0 +1,22 @@
+{
+  "name": "Дом Пиона — авторская флористика",
+  "short_name": "Дом Пиона",
+  "description": "Авторские букеты, конструктор букета, бонусы и доставка за 2 часа",
+  "lang": "ru",
+  "start_url": "./index.html?utm_source=pwa&utm_medium=app",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#16201B",
+  "theme_color": "#16201B",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Каталог букетов", "url": "./index.html#catalog", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Собрать букет", "url": "./index.html#build", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Мои бонусы", "url": "./index.html#cabinet", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
