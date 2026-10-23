@@ -1,5 +1,5 @@
 /* Service Worker «Дом Пиона»: мгновенная загрузка, работа без сети, уведомления */
-const VERSION = "dp-v10";
+const VERSION = "dp-v12";
 const SHELL = ["./", "./index.html", "./app.js", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png"];
 
 self.addEventListener("install", e => {

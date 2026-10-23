@@ -108,9 +108,61 @@ async function copyText(text) {
     let ok = false; try { ok = document.execCommand("copy"); } catch {} ta.remove(); return ok;
   }
 }
+/* Сайт внутри Telegram (мини-приложение): Telegram дописывает к адресу подписанные данные о человеке (tgWebAppData).
+   По ним сервер узнаёт участника клуба без кода, а ссылки открываются средствами Telegram. */
+const TG = (() => {
+  const raw = location.hash || "";
+  let initData = "";
+  const at = raw.indexOf("tgWebAppData=");
+  if (at >= 0) { try { initData = decodeURIComponent(raw.slice(at + 13).split(/&tgWebApp/)[0]); sessionStorage.setItem("dp_tgInit", initData); } catch {} }
+  else { try { initData = sessionStorage.getItem("dp_tgInit") || ""; } catch {} }
+  const inside = !!initData;
+  let wa = null, readyCb = [];
+  const ready = new Promise(res => readyCb.push(res));
+  if (inside) {
+    const sc = document.createElement("script");
+    sc.src = "https://telegram.org/js/telegram-web-app.js";
+    sc.onload = () => {
+      wa = window.Telegram && window.Telegram.WebApp;
+      try { wa.ready(); wa.expand(); wa.setHeaderColor && wa.setHeaderColor("#F6F1EA"); wa.setBackgroundColor && wa.setBackgroundColor("#F6F1EA"); } catch {}
+      cleanHash(); readyCb.forEach(f => f(wa));
+    };
+    sc.onerror = () => { cleanHash(); readyCb.forEach(f => f(null)); };
+    document.head.appendChild(sc);
+  }
+  /* убираем служебные данные Telegram из адреса (после того как их прочитал скрипт Telegram) */
+  function cleanHash() {
+    if (!/tgWebApp/.test(location.hash)) return;
+    const v = location.hash.slice(1).split(/[?&]/)[0];
+    try { history.replaceState(null, "", location.pathname + location.search + (v && !/^tgWebApp/.test(v) ? "#" + v : "")); } catch {}
+  }
+  function open(url) {
+    if (!wa) return false;
+    try { if (/^https:\/\/t\.me\//.test(url)) wa.openTelegramLink(url); else wa.openLink(url); return true; } catch { return false; }
+  }
+  function requestContact() {
+    return ready.then(w => new Promise(res => {
+      if (!w || !w.requestContact || (w.isVersionAtLeast && !w.isVersionAtLeast("6.9"))) return res(null);
+      try { w.requestContact(ok => res(!!ok)); } catch { res(null); }
+    }));
+  }
+  return { inside, initData, open, requestContact, ready };
+})();
+function openUrl(url) { if (!TG.open(url)) window.open(url, "_blank", "noopener"); }
+/* внутри Telegram внешние ссылки открываем через Telegram, иначе они могут не сработать */
+document.addEventListener("click", e => {
+  if (!TG.inside) return;
+  const a = e.target.closest && e.target.closest("a[href^='http']");
+  if (a && (a.target === "_blank" || !a.href.startsWith(location.origin)) && TG.open(a.href)) e.preventDefault();
+});
 async function sendTo(channel, text) {
-  if (channel === "wa") { window.open(waLink(text), "_blank", "noopener"); toast("Открываем WhatsApp с вашей заявкой"); }
-  else { window.open(tgLink(), "_blank", "noopener"); const ok = await copyText(text); toast(ok ? "Заявка скопирована. Вставьте её в чат Telegram" : "Откройте чат Telegram и опишите заказ"); }
+  if (channel === "wa") { openUrl(waLink(text)); toast("Открываем WhatsApp с вашей заявкой"); }
+  else {
+    // в обычном браузере окно открываем сразу (иначе браузер его заблокирует), в Telegram — сначала копируем текст
+    if (!TG.inside) window.open(tgLink(), "_blank", "noopener");
+    const ok = await copyText(text); if (TG.inside) openUrl(tgLink());
+    toast(ok ? "Заявка скопирована. Вставьте её в чат Telegram" : "Откройте чат Telegram и опишите заказ");
+  }
 }
 const todayISO = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); };
 
@@ -238,7 +290,7 @@ const Loyalty = (() => {
   function setMe(m) {
     me = m; offline = false; store.set("me", m);
     if (selected && !(m.promos || []).some(p => p.kind === selected.kind && (p.id || "") === (selected.id || ""))) selected = null;
-    render(); Care.banner(); if (Sheets.current === "orderSheet") Order.render();
+    render(); Care.banner(); Cart.fromServer(m.cart); if (Sheets.current === "orderSheet") Order.render();
   }
   async function refresh(quiet) {
     if (!session) return;
@@ -258,7 +310,21 @@ const Loyalty = (() => {
     login = { then: opts.then, name: opts.name || "", pending: true };
     render();
     try {
-      const r = await call("auth/start", { name: opts.name || "", ref: store.get("referrer", "") || "" });
+      const ref = store.get("referrer", "") || "";
+      if (TG.inside) {
+        /* внутри Telegram: подпись Telegram + номер через системное окно Telegram, без перехода в бота */
+        const r = await call("auth/tg", { initData: TG.initData, name: opts.name || "", ref });
+        if (r.status === "ok") { login.pending = false; done(r); return; }
+        if (r.status !== "need_contact") throw new Error(r.message || "Не удалось войти");
+        Object.assign(login, { token: r.token, link: r.link, bot: r.bot, pending: false, started: Date.now(), tg: true });
+        login.timer = setInterval(poll, 2000);
+        render();
+        const shared = await TG.requestContact();
+        if (shared === false) toast("Без номера телефона войти в клуб не получится");
+        if (shared === null && login) { login.tg = false; render(); openUrl(r.link); } // старый Telegram без окна «Поделиться номером» — вход через бота, как в браузере
+        return;
+      }
+      const r = await call("auth/start", { name: opts.name || "", ref });
       if (r.error) throw new Error(r.message);
       Object.assign(login, { token: r.token, link: r.link, bot: r.bot, pending: false, started: Date.now() });
       login.timer = setInterval(poll, 2500);
@@ -280,7 +346,7 @@ const Loyalty = (() => {
   function done(r) {
     if (!r || r.status !== "ok") return false;
     const then = login && login.then; stopLogin();
-    session = r.session; store.set("session", session);
+    session = r.session; store.set("session", session); store.set("noAuto", false);
     const isNew = Date.now() - r.me.user.at < 5 * 60e3 && r.me.history.length <= 2;
     setMe(r.me);
     if (isNew) Track.event("register");
@@ -293,7 +359,7 @@ const Loyalty = (() => {
 
   async function logout() {
     try { await call("logout", {}); } catch {}
-    session = null; me = null; selected = null; store.set("session", null); store.set("me", null); render(); Care.banner();
+    session = null; me = null; selected = null; store.set("session", null); store.set("me", null); store.set("noAuto", true); render(); Care.banner();
     toast("Вы вышли. Баллы сохранены, войти снова можно через Telegram");
   }
 
@@ -336,10 +402,15 @@ const Loyalty = (() => {
             <h3>Вход и регистрация</h3>${how}
             <div class="fields" style="margin-top:12px">
               <div class="field"><label for="r-name">Как к вам обращаться</label><input id="r-name" autocomplete="given-name" placeholder="Анна" value="${esc(store.get("lastName", ""))}"></div>
-              <button class="btn btn-tg block" id="tgLogin" type="button"><svg aria-hidden="true"><use href="#i-tg"/></svg>Войти через Telegram</button>
+              <button class="btn btn-tg block" id="tgLogin" type="button"><svg aria-hidden="true"><use href="#i-tg"/></svg>${TG.inside ? "Войти по номеру Telegram" : "Войти через Telegram"}</button>
             </div>
             <small class="muted" style="display:block;margin-top:10px">Без SMS и паролей. Номер виден только магазину.</small>` :
-          login.pending ? `<h3>Готовим вход…</h3><p>Секунду.</p>` : `
+          login.pending ? `<h3>Готовим вход…</h3><p>Секунду.</p>` : login.tg ? `
+            <h3>Подтвердите номер</h3>
+            <p>Telegram покажет окно «Поделиться номером» — нажмите «Поделиться». Вход выполнится сам.</p>
+            <button class="btn btn-tg block" type="button" id="tgAgain" style="margin-top:12px"><svg aria-hidden="true"><use href="#i-tg"/></svg>Поделиться номером</button>
+            <button class="btn btn-line block" type="button" id="loginCancel" style="margin-top:10px">Отмена</button>
+            <small class="muted wait-dots" style="display:block;margin-top:10px">Ждём подтверждения</small>` : `
             <h3>Подтвердите номер в Telegram</h3>
             <p>Откройте бота, нажмите «Поделиться номером». Бот пришлёт код, а вход здесь выполнится сам.</p>
             <a class="btn btn-tg block" href="${esc(login.link)}" target="_blank" rel="noopener" style="margin-top:12px"><svg aria-hidden="true"><use href="#i-tg"/></svg>Открыть @${esc(login.bot)}</a>
@@ -356,6 +427,7 @@ const Loyalty = (() => {
       const cf = $("#codeForm"); if (cf) cf.onsubmit = e => { e.preventDefault(); const c = $("#r-code").value.replace(/\D/g, ""); if (c.length !== 6) { toast("Код из 6 цифр"); return; } sendCode(c); };
       const rc = $("#r-code"); if (rc) rc.oninput = () => { const c = rc.value.replace(/\D/g, ""); if (c.length === 6) sendCode(c); };
       const lc = $("#loginCancel"); if (lc) lc.onclick = () => { stopLogin(); render(); };
+      const ta = $("#tgAgain"); if (ta) ta.onclick = async () => { const sh = await TG.requestContact(); if (sh === null && login) { login.tg = false; render(); openUrl(login.link); } };
     } else {
       const lv = level(), nx = nextLevel(), spent = me.spent || 0;
       const pct = nx ? Math.min(100, (spent - lv.from) / (nx.from - lv.from) * 100) : 100;
@@ -418,9 +490,16 @@ const Loyalty = (() => {
       ${notif ? `<div class="toggle-row" style="margin-top:8px"><span>Уведомления о заказах и важных датах</span><label class="switch"><input type="checkbox" id="pushToggle" ${Notification.permission === "granted" && store.get("push", false) ? "checked" : ""} aria-label="Уведомления"><i></i></label></div>` : ""}
     </div>`;
   }
+  /* ready — промис «вход проверен»: ссылки из бота (корзина, скидка к дате) ждут его, прежде чем что-то открывать */
+  let ready = Promise.resolve();
   if (session) setTimeout(refresh, 300);
+  /* в мини-приложении участник клуба входит сам, без кода: Telegram подтверждает, кто это */
+  else if (TG.inside && !store.get("noAuto", false)) ready = (async () => {
+    try { const r = await call("auth/tg", { initData: TG.initData }); if (r.status === "ok" && !session) { session = r.session; store.set("session", session); setMe(r.me); Care.migrate(); } } catch {}
+  })();
   return {
     render, refresh, login: startLogin, logout, onOrder, level, bonus, call,
+    get ready() { return ready; },
     get me() { return me; },
     /* совместимость с остальным кодом сайта */
     get state() { return { user: me ? { name: me.user.name, phone: me.user.phone, code: me.user.card } : null, balance: me ? me.balance : 0, promo: promo(), flags: (me && me.flags) || {} }; },
@@ -592,8 +671,26 @@ document.addEventListener("input", e => { const f = e.target.closest && e.target
 
 /* Корзина: несколько букетов, количество, хранится на устройстве */
 const Cart = (() => {
-  let items = store.get("cart", []);
-  const save = () => { store.set("cart", items); badge(); if (Sheets.current === "orderSheet") Order.render(); };
+  let items = store.get("cart", []), syncT = 0, synced = "";
+  const save = () => { store.set("cart", items); badge(); if (Sheets.current === "orderSheet") Order.render(); sync(); };
+  /* участнику клуба корзина сохраняется и на сервере: бот напомнит о ней, а на другом устройстве она восстановится */
+  const key = list => JSON.stringify(list.map(i => [i.id, i.qty, i.price]));
+  function sync() {
+    clearTimeout(syncT);
+    syncT = setTimeout(() => {
+      if (!Loyalty.me || key(items) === synced) return;
+      const k = key(items);
+      Loyalty.call("cart", { items: items.map(({ id, name, price, qty }) => ({ id, name, price, qty })) }).then(() => { synced = k; }).catch(() => {});
+    }, 1200);
+  }
+  function fromServer(list) {
+    if (!Array.isArray(list)) return;
+    if (!items.length && list.length) {
+      items = list.map(i => { const b = BOUQUETS.find(x => x.id === i.id); return { id: i.id, name: i.name, price: i.price, qty: i.qty, img: b ? b.img : undefined }; });
+      synced = key(items); store.set("cart", items); badge(); return;
+    }
+    synced = key(list); if (key(items) !== synced) sync();
+  }
   function badge() {
     const n = items.reduce((a, i) => a + i.qty, 0), b = $("#cartCount");
     b.textContent = n; b.hidden = !n;
@@ -610,7 +707,7 @@ const Cart = (() => {
     sum: () => items.reduce((a, i) => a + i.price * i.qty, 0),
     count: () => items.reduce((a, i) => a + i.qty, 0),
     lines: () => items.map(i => `• ${i.name}${i.qty > 1 ? " ×" + i.qty : ""} — ${rub(i.price * i.qty)}`),
-    badge
+    badge, fromServer
   };
 })();
 
@@ -622,7 +719,8 @@ const Order = (() => {
     const base = Cart.sum(), disc = promo ? Math.round(base * promo.percent / 100) : 0, time = $("#o-time").value;
     let deliv = 0; if (ship === "delivery" && base) deliv = base - disc >= CONFIG.delivery.freeFrom ? 0 : (time ? CONFIG.delivery.onTime : CONFIG.delivery.price);
     const max = Loyalty.maxSpend(base - disc), pts = usePts ? max : 0;
-    return { ship, base, disc, deliv, pts, max, total: base - disc - pts + deliv, promo, time };
+    const g = Gift.applied, due = base - disc - pts + deliv, gift = g && base ? Math.min(g.balance, due) : 0;
+    return { ship, base, disc, deliv, pts, max, total: due - gift, promo, time, gift, giftCode: g ? g.code : "" };
   }
   function renderCart() {
     const box = $("#cartList"), it = Cart.items;
@@ -650,6 +748,7 @@ const Order = (() => {
       ${c.disc ? `<div class="disc"><span>Скидка ${c.promo.percent}% (${esc(c.promo.code)})</span><span>−${rub(c.disc)}</span></div>` : ""}
       ${c.pts ? `<div class="disc"><span>Баллами</span><span>−${rub(c.pts)}</span></div>` : ""}
       ${c.ship === "delivery" ? `<div><span>Доставка${c.time ? " ко времени" : ""}</span><span>${c.deliv ? rub(c.deliv) : "бесплатно"}</span></div>` : ""}
+      ${c.gift ? `<div class="disc"><span>Сертификат</span><span>−${rub(c.gift)}</span></div>` : ""}
       <div class="tot"><span>Итого</span><b>${rub(c.total)}</b></div>` : `<div><span>Флорист рассчитает стоимость в переписке</span></div>`;
   }
   /* open(id) — добавить букет из каталога и открыть корзину; open() — просто открыть */
@@ -657,7 +756,7 @@ const Order = (() => {
     if (id) Cart.addBouquet(id);
     const u = Loyalty.state.user; if (u) { if (!$("#o-name").value) $("#o-name").value = u.name; if (!$("#o-phone").value) $("#o-phone").value = u.phone; }
     if (note && !$("#o-note").value) $("#o-note").dataset.event = note;
-    usePts = false; render(); Sheets.open("orderSheet"); Track.event("order_open");
+    usePts = false; Gift.fill(); render(); Sheets.open("orderSheet"); Track.event("order_open");
   }
   $("#orderForm").addEventListener("change", render);
   $("#o-date").min = todayISO();
@@ -679,6 +778,7 @@ const Order = (() => {
       c.disc && `Скидка ${c.promo.percent}% по коду ${c.promo.code}: −${rub(c.disc)}`,
       c.pts && `Списать баллов: ${c.pts} (карта ${lp.user.code})`,
       orderNo && `Номер заказа в клубе: ${orderNo}`,
+      c.giftCode && (c.gift ? `Оплата сертификатом ${c.giftCode}: −${rub(c.gift)} (флористу: /gift ${c.giftCode} ${c.gift})` : `Есть сертификат ${c.giftCode} (баланс ${rub(Gift.applied.balance)})`),
       c.ship === "delivery" ? `Доставка: ${f.address || "адрес уточним"}${c.base ? ", " + (c.deliv ? rub(c.deliv) : "бесплатно") : ""}` : "Самовывоз",
       `Когда: ${date || "сегодня"}, ${c.time || "как можно скорее"}`,
       f.note.trim() && `Текст открытки: ${f.note.trim()}`,
@@ -691,12 +791,136 @@ const Order = (() => {
     Track.purchase(c.total, Cart.items.map(i => i.name).join(", ") || "Консультация");
     if (orderNo) { const cb = Math.round((c.base - c.disc - c.pts) * Loyalty.level().cashback / 100); if (cb > 0) setTimeout(() => toast(`+${cb} баллов кэшбэка появятся, когда флорист выполнит заказ`), 4200); }
     delete $("#o-note").dataset.event;
-    sendTo(b.dataset.send, msg); Sheets.close(); Cart.clear();
+    sendTo(b.dataset.send, msg); Sheets.close(); Cart.clear(); Gift.clear();
   }));
   return { open, render };
 })();
 $("#cartBtn").onclick = () => Order.open();
 Cart.badge();
+
+/* Подарочные сертификаты. Покупка — заявка флористу (он связывается и принимает оплату, затем активирует сертификат в боте).
+   Получатель открывает ссылку ?gift=КОД, видит открытку и баланс, а код вводит при заказе. Списывает сумму флорист: /gift КОД сумма */
+const Gift = (() => {
+  const SUMS = [3000, 5000, 10000];
+  let applied = store.get("gift", null); // { code, balance }
+  const norm = v => String(v || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 16);
+  const card = (sum, to, from) => `<div class="gcard"><span class="gc-logo">${esc(CONFIG.shop)}</span><span class="gc-sum">${sum ? rub(sum) : "— ₽"}</span><span class="gc-k">Подарочный сертификат</span>${to || from ? `<span class="gc-to">${to ? "Кому: " + esc(to) : ""}${to && from ? " · " : ""}${from ? "От: " + esc(from) : ""}</span>` : ""}</div>`;
+  async function api(path, body) { try { return await Loyalty.call(path, body); } catch (e) { return (e && e.data && e.data.error) ? e.data : { error: "net", message: "Нет связи. Попробуйте ещё раз или напишите флористу" }; } }
+
+  function buy() {
+    let amount = 5000;
+    const u = Loyalty.state.user;
+    $("#giftTitle").textContent = "Подарочный сертификат";
+    $("#giftBody").innerHTML = `
+      <div id="gPrev"></div>
+      <div class="fields" style="margin-top:16px">
+        <div class="field"><label>Сумма</label><div class="gift-sums" role="group" aria-label="Сумма сертификата">${SUMS.map(v => `<button type="button" class="chip" data-sum="${v}" aria-pressed="${v === amount}">${num(v)}</button>`).join("")}<button type="button" class="chip" data-sum="" aria-pressed="false">Другая</button></div></div>
+        <div class="field" id="gOwnF" hidden><label for="gOwn">Своя сумма, ₽</label><input id="gOwn" type="number" inputmode="numeric" min="1000" max="50000" step="500" placeholder="от 1 000 до 50 000"></div>
+        <div class="two">
+          <div class="field"><label for="gTo">Кому</label><input id="gTo" maxlength="40" placeholder="Маме"></div>
+          <div class="field"><label for="gFrom">От кого</label><input id="gFrom" maxlength="40" placeholder="Аня"></div>
+        </div>
+        <div class="field"><label for="gNote">Пожелание</label><textarea id="gNote" maxlength="160" placeholder="Пусть дома всегда будут цветы"></textarea></div>
+        <div class="two">
+          <div class="field"><label for="gName">Ваше имя</label><input id="gName" autocomplete="name" value="${esc(u ? u.name : "")}"><span class="err">Укажите имя</span></div>
+          <div class="field"><label for="gPhone">Телефон</label><input id="gPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7" value="${esc(u ? u.phone : "")}"><span class="err">Нужно 10+ цифр</span></div>
+        </div>
+        <button type="button" class="btn btn-dark block" id="gSend">Оформить сертификат</button>
+        <p class="hint" style="margin:0">Флорист свяжется с вами для оплаты. После оплаты придёт ссылка на сертификат — её можно переслать. Действует 12 месяцев, тратится частями.</p>
+      </div>`;
+    const own = $("#gOwn"), prev = () => $("#gPrev").innerHTML = card(amount, $("#gTo").value.trim(), $("#gFrom").value.trim());
+    $$("[data-sum]").forEach(b => b.onclick = () => {
+      $$("[data-sum]").forEach(x => x.setAttribute("aria-pressed", x === b));
+      $("#gOwnF").hidden = !!b.dataset.sum;
+      amount = b.dataset.sum ? +b.dataset.sum : (+own.value || 0);
+      if (!b.dataset.sum) own.focus();
+      prev();
+    });
+    own.oninput = () => { amount = +own.value || 0; prev(); };
+    ["#gTo", "#gFrom"].forEach(id => $(id).oninput = prev);
+    $("#gSend").onclick = async () => {
+      const n = $("#gName"), p = $("#gPhone");
+      if (!(amount >= 1000 && amount <= 50000)) { toast("Сумма сертификата — от 1 000 до 50 000 ₽"); $("#gOwnF").hidden = false; own.focus(); return; }
+      if (!validName(n) | !validPhone(p)) { toast("Проверьте имя и телефон"); return; }
+      const btn = $("#gSend"); btn.disabled = true; btn.textContent = "Отправляем…";
+      const d = { amount, to: $("#gTo").value.trim(), from: $("#gFrom").value.trim(), note: $("#gNote").value.trim(), name: n.value.trim(), phone: p.value.trim() };
+      const r = await api("gift/request", d);
+      btn.disabled = false; btn.textContent = "Оформить сертификат";
+      if (r.error && r.error !== "net" && r.error !== "club_off") { toast(r.message || "Не получилось, попробуйте ещё раз"); return; }
+      done(d, r.ref || "");
+      Track.event("gift_request", { value: amount });
+    };
+    prev();
+  }
+  function done(d, ref) {
+    const msg = [`Здравствуйте! Хочу подарочный сертификат «${CONFIG.shop}».`, ref && `Заявка ${ref}`, `Сумма: ${rub(d.amount)}`, d.to && `Кому: ${d.to}`, d.from && `От кого: ${d.from}`, d.note && `Пожелание: ${d.note}`, "", `Имя: ${d.name}`, `Телефон: ${d.phone}`].filter(Boolean).join("\n");
+    $("#giftBody").innerHTML = `
+      ${card(d.amount, d.to, d.from)}
+      <div class="panel glass" style="margin-top:16px">
+        <h3>${ref ? `Заявка ${esc(ref)} принята` : "Почти готово"}</h3>
+        <p>${ref ? "Флорист уже получил её и скоро свяжется для оплаты. Чтобы быстрее — напишите сами:" : "Отправьте заявку флористу, он подскажет, как оплатить:"}</p>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn btn-wa" type="button" data-gsend="wa"><svg class="ic-msg" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</button>
+          <button class="btn btn-tg" type="button" data-gsend="tg"><svg class="ic-msg" aria-hidden="true"><use href="#i-tg"/></svg>Telegram</button>
+        </div>
+      </div>`;
+    $$("[data-gsend]").forEach(b => b.onclick = () => sendTo(b.dataset.gsend, msg));
+  }
+
+  async function view(raw) {
+    const code = norm(raw); if (!code) return;
+    $("#giftTitle").textContent = "Вам подарок";
+    $("#giftBody").innerHTML = `<p class="muted">Открываем сертификат…</p>`; Sheets.open("giftSheet");
+    const g = await api("gift/view", { code });
+    if (g.error || !g.code) { $("#giftBody").innerHTML = `<div class="panel glass"><h3>Сертификат не найден</h3><p>${esc(g.message || "Проверьте ссылку")}. Если его только что купили, флорист активирует его после оплаты.</p></div>`; return; }
+    const exp = g.expires ? new Date(g.expires).toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" }).replace(/\s*г\.$/, "") : "";
+    const live = g.status === "active" && g.balance > 0;
+    if (live) { applied = { code: g.code, balance: g.balance }; store.set("gift", applied); }
+    const link = location.origin + location.pathname + "?gift=" + g.code;
+    $("#giftBody").innerHTML = `
+      ${card(g.amount, g.to, g.from)}
+      ${g.note ? `<p style="font-family:var(--serif);font-size:20px;line-height:1.3;margin:18px 2px 0">«${esc(g.note)}»</p>` : ""}
+      <div class="fields" style="margin-top:16px">
+        <div class="gift-code"><span>Код <b>${esc(g.code)}</b></span><button type="button" class="btn btn-line btn-sm" id="gCopy">Скопировать</button></div>
+        <p class="hint" style="margin:0">${live ? `Остаток <b>${rub(g.balance)}</b>${g.balance < g.amount ? ` из ${rub(g.amount)}` : ""}${exp ? `, действует до ${exp}` : ""}. Код уже подставлен в корзину — просто выберите букет.` : g.status === "expired" ? "Срок действия сертификата закончился." : "Сертификат полностью использован."}</p>
+        ${live ? `<button type="button" class="btn btn-dark block" id="gPick">Выбрать букет</button>` : ""}
+        <button type="button" class="btn btn-line block" id="gShare">Переслать сертификат</button>
+      </div>`;
+    $("#gCopy").onclick = async () => toast(await copyText(g.code) ? "Код скопирован" : g.code);
+    const pick = $("#gPick"); if (pick) pick.onclick = () => { Sheets.close(); location.hash = "#catalog"; toast("Выберите букет — сертификат применится в корзине"); };
+    $("#gShare").onclick = async () => {
+      const text = `Подарочный сертификат «${CONFIG.shop}» на ${rub(g.amount)}`;
+      if (navigator.share) { try { await navigator.share({ title: text, text, url: link }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
+      toast(await copyText(link) ? "Ссылка скопирована" : link);
+    };
+    Track.event("gift_view");
+  }
+
+  /* поле в корзине */
+  const msgEl = () => $("#giftMsg");
+  function showApplied() {
+    const m = msgEl(); if (!m) return;
+    m.className = "gift-msg" + (applied ? " ok" : ""); m.textContent = applied ? `Сертификат применён: доступно ${rub(applied.balance)}` : "";
+    $("#giftApply").textContent = applied ? "Убрать" : "Применить";
+  }
+  async function apply() {
+    if (applied) { clear(); $("#o-gift").value = ""; Order.render(); return; }
+    const code = norm($("#o-gift").value), m = msgEl();
+    if (code.length < 6) { m.className = "gift-msg bad"; m.textContent = "Введите код с сертификата"; return; }
+    m.className = "gift-msg"; m.textContent = "Проверяем…";
+    const g = await api("gift/view", { code });
+    if (g.error || !g.code) { m.className = "gift-msg bad"; m.textContent = g.message || "Сертификат не найден"; return; }
+    if (g.status !== "active" || g.balance <= 0) { m.className = "gift-msg bad"; m.textContent = g.status === "expired" ? "Срок действия сертификата закончился" : "На сертификате не осталось средств"; return; }
+    applied = { code: g.code, balance: g.balance }; store.set("gift", applied);
+    $("#o-gift").value = g.code; showApplied(); Order.render();
+  }
+  function fill() { const i = $("#o-gift"); if (i) i.value = applied ? applied.code : ""; showApplied(); }
+  function clear() { applied = null; store.set("gift", null); showApplied(); }
+  $("#giftApply").onclick = apply;
+  $("#o-gift").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); apply(); } });
+  $("#giftOpen").onclick = () => { buy(); Sheets.open("giftSheet"); Track.event("gift_open"); };
+  return { buy, view, fill, clear, get applied() { return applied; } };
+})();
 
 /* ==========================================================
    8. КАТАЛОГ, НАЛИЧИЕ, ОТЗЫВЫ, ИЗБРАННОЕ И «НАМЕКНУТЬ»
@@ -712,7 +936,7 @@ const Shop = (() => {
   async function load() {
     if (!CONFIG.aiEndpoint) return;
     try {
-      const r = await fetch(CONFIG.aiEndpoint.replace(/\/$/, "") + "/api/public");
+      const r = await fetch(CONFIG.aiEndpoint.replace(/\/$/, "") + "/api/public", { cache: "no-store" });
       if (!r.ok) return;
       const j = await r.json();
       const changed = JSON.stringify(j.out || []) !== JSON.stringify(out);
@@ -1305,8 +1529,8 @@ const Chat = (() => {
     const cmd = { "открыть кабинет": "#cabinet", "открыть 3d": "#build", "собрать свой букет": "#build" };
     if (cmd[t]) { Sheets.close(); location.hash = cmd[t]; return; }
     if (t === "придумать текст открытки") { CardGen.open(); return; }
-    if (t === "написать в whatsapp") { window.open(waLink("Здравствуйте! Вопрос с сайта."), "_blank", "noopener"); return; }
-    if (t === "написать в telegram") { window.open(tgLink(), "_blank", "noopener"); return; }
+    if (t === "написать в whatsapp") { openUrl(waLink("Здравствуйте! Вопрос с сайта.")); return; }
+    if (t === "написать в telegram") { openUrl(tgLink()); return; }
     if (t === "показать все букеты") return bot("Вот вся коллекция:", () => cards(BOUQUETS));
     if (t === "подобрать букет") return bot("Расскажите своими словами: кому букет, какой это человек, повод, любимые цвета и бюджет. Например: «маме парня, идём знакомиться, она строгая, любит пастельные тона, до 5000».", () => chips(["Маме, нежные, до 8000","Любимой на годовщину","Коллеге до 5000"]));
     if (t === "оформить заказ" || t === "показать корзину") return startOrder();
@@ -1478,8 +1702,12 @@ const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.
 const observe = scope => $$(".rv:not(.on)", scope).forEach(el => io ? io.observe(el) : el.classList.add("on"));
 
 const VIEWS = ["home", "catalog", "build", "quiz", "cabinet"];
+/* ссылки из бота: ?v=catalog — открыть нужный раздел (hash в мини-приложении занят данными Telegram) */
+let bootView = new URLSearchParams(location.search).get("v");
 function route() {
-  const v = (location.hash || "#home").slice(1), view = VIEWS.includes(v) ? v : "home";
+  const v = (location.hash || "#home").slice(1).split(/[?&]/)[0];
+  const view = VIEWS.includes(v) ? v : VIEWS.includes(bootView) ? bootView : "home";
+  bootView = null;
   $$(".view").forEach(s => s.classList.toggle("active", s.dataset.view === view));
   $$(".tab").forEach(t => { const on = t.dataset.tab === view; t.classList.toggle("active", on); on ? t.setAttribute("aria-current", "page") : t.removeAttribute("aria-current"); });
   document.body.classList.toggle("no-fab", view === "build");
@@ -1494,11 +1722,16 @@ Loyalty.render(); Care.banner(); Builder.update(); route();
 setTimeout(() => Care.notifyDue(), 2500);
 if (store.get("referrer", null) && !Loyalty.state.user && new URLSearchParams(location.search).get("ref")) setTimeout(() => toast(`Друг дарит вам ${CONFIG.loyalty.friendGift} баллов. Вступите в клуб, чтобы забрать`), 1200);
 
-/* Открытые данные (наличие, отзывы), ссылки-намёки и переход из напоминания бота */
+/* Открытые данные (наличие, отзывы), ссылки-намёки и переход из напоминания бота.
+   Наличие перепроверяем каждые 30 секунд и при возвращении на вкладку, чтобы отметки флориста в боте появлялись почти сразу */
 Shop.load();
+setInterval(() => { if (!document.hidden) Shop.load(); }, 30e3);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) Shop.load(); });
 (() => {
   const qs = new URLSearchParams(location.search);
-  const hint = qs.get("hint"), care = qs.get("care");
+  const hint = qs.get("hint"), care = qs.get("care"), cart = qs.get("cart"), gift = qs.get("gift");
+  if (cart) setTimeout(async () => { await Loyalty.ready; await Loyalty.refresh(); Order.open(); }, 400);
+  if (gift) setTimeout(() => Gift.view(gift), 500);
   if (hint) {
     const ids = hint.split(",").map(x => x.trim()).filter(id => BOUQUETS.some(b => b.id === id)).slice(0, 12);
     const from = (qs.get("from") || "").trim().slice(0, 40), note = (qs.get("note") || "").trim().slice(0, 160);
@@ -1506,15 +1739,15 @@ Shop.load();
   }
   if (care && /^[A-Z0-9]{6,20}$/i.test(care)) {
     const go = async () => {
-      await Loyalty.refresh();
+      await Loyalty.ready; await Loyalty.refresh();
       if (!Loyalty.me) { Loyalty.login({ then: go }); toast("Войдите в клуб, чтобы применить скидку к дате"); return; }
       if (!Care.offerById(care)) toast("Эта дата больше не найдена в календаре");
     };
     setTimeout(go, 500);
   }
   // убираем служебные параметры из адреса, чтобы при обновлении страницы окно не открывалось снова
-  if (hint || care) {
-    ["hint", "from", "note", "care"].forEach(k => qs.delete(k));
+  if (hint || care || cart || gift || qs.has("v")) {
+    ["hint", "from", "note", "care", "cart", "gift", "v"].forEach(k => qs.delete(k));
     try { history.replaceState(null, "", location.pathname + (qs.toString() ? "?" + qs : "") + location.hash); } catch {}
   }
 })();
